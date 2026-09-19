@@ -15,6 +15,7 @@
       den.aspects.starship
       den.aspects.fzf
       den.aspects.gpg-agent
+      den.aspects.programming
     ]; # (10)
     nixos = {pkgs, ...}: {
       users.users.matt.packages = with pkgs; [

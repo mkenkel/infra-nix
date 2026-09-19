@@ -9,6 +9,8 @@
       den.aspects.network-manager
       den.aspects.openssh
       den.aspects.nix-settings
+      den.aspects.polkit
+      den.aspects.realtime-audio
     ]; # (7)
     nixos = {pkgs, ...}: {
       imports = [./_nixos/hardware-configuration.nix];
