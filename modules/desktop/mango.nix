@@ -8,7 +8,7 @@
     pkgs,
     ...
   }: let
-    wallpaperPath = "${config.home.homeDirectory}/.config/wallpapers/default.png";
+    wallpaperPath = "${config.home.homeDirectory}/.config/wallpapers/forest.jpg";
   in {
     imports = [
       inputs.mango.hmModules.mango
