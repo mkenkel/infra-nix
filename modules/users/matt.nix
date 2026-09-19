@@ -15,7 +15,6 @@
         btop
         chafa
         cmatrix
-        claude-code
         github-copilot-cli
         fastfetch
         feh
