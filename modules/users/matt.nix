@@ -16,6 +16,12 @@
       den.aspects.fzf-config
       den.aspects.gpg-agent-config
     ]; # (10)
+    nixos = {pkgs, ...}: {
+      users.users.matt.packages = with pkgs; [
+        vim
+        git
+      ];
+    };
     homeManager = {pkgs, ...}: {
       home.packages = with pkgs; [
         alacritty
