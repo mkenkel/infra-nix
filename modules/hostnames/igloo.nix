@@ -16,7 +16,7 @@
         git
         glibc
         glibc_multi
-        google-chrome
+        # google-chrome
         go
         gopls
         helm-ls
