@@ -45,17 +45,19 @@
       # (privacy.sanitize.sanitizeOnShutdown); these are exempted so
       # logins persist across restarts.
       policies.Cookies.Allow = [
-        "https://google.com"
         "https://accounts.google.com"
+        "https://google.com"
+        "https://github.com"
+        "https://www.github.com"
         "https://mail.google.com"
-        "https://myaccount.google.com"
-        "https://youtube.com"
-        "https://www.youtube.com"
-        "https://reddit.com"
-        "https://www.reddit.com"
         "https://mail.uc.edu"
+        "https://myaccount.google.com"
+        "https://reddit.com"
         "https://uc.edu"
+        "https://www.reddit.com"
         "https://www.uc.edu"
+        "https://www.youtube.com"
+        "https://youtube.com"
       ];
     };
   };
