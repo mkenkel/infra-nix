@@ -6,6 +6,7 @@
       den.batteries.primary-user
       (den.batteries.user-shell "fish")
       den.aspects.fish-config
+      den.aspects.tmux-config
     ]; # (10)
     homeManager = {pkgs, ...}: {
       home.packages = with pkgs; [
