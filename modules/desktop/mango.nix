@@ -660,10 +660,26 @@
       };
       Service = {
         ExecStart = "${pkgs.writeShellScript "spotify-notify" ''
+          art_cache="''${XDG_CACHE_HOME:-$HOME/.cache}/spotify-notify"
+          mkdir -p "$art_cache"
+
           while true; do
-            ${pkgs.playerctl}/bin/playerctl --player=spotify --follow metadata --format '{{title}}|{{artist}}' 2>/dev/null \
-              | while IFS='|' read -r title artist; do
-                  ${pkgs.libnotify}/bin/notify-send -a Spotify -i spotify "$title" "$artist"
+            ${pkgs.playerctl}/bin/playerctl --player=spotify --follow metadata --format '{{title}}|{{artist}}|{{mpris:artUrl}}' 2>/dev/null \
+              | while IFS='|' read -r title artist art_url; do
+                  icon="spotify"
+                  case "$art_url" in
+                    file://*)
+                      icon="''${art_url#file://}"
+                      ;;
+                    http://*|https://*)
+                      dest="$art_cache/$(echo "$art_url" | ${pkgs.coreutils}/bin/sha256sum | ${pkgs.coreutils}/bin/cut -d' ' -f1).jpg"
+                      if [ ! -s "$dest" ]; then
+                        ${pkgs.curl}/bin/curl -sfL "$art_url" -o "$dest" || rm -f "$dest"
+                      fi
+                      [ -s "$dest" ] && icon="$dest"
+                      ;;
+                  esac
+                  ${pkgs.libnotify}/bin/notify-send -a Spotify -i "$icon" "$title" "$artist"
                 done
             sleep 2
           done
