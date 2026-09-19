@@ -58,6 +58,10 @@
   };
 in {
   den.aspects.gtk = {
+    # home-manager's gtk module mirrors theme/cursor/font settings into dconf
+    # (org/gnome/desktop/interface); dconf's D-Bus service must be registered
+    # system-wide or activation fails with "ServiceUnknown: not activatable".
+    nixos.programs.dconf.enable = true;
     includes = [
       # Posy cursors are CC-BY-NC-4.0 (unfree); scope the allowance to just
       # this package rather than enabling allowUnfree globally.

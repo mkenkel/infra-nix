@@ -71,6 +71,9 @@
         # Can't reload source if we're Nix-ing :)
         # ---
 
+        # Toggle pane fullscreen (zoom) without needing the prefix
+        bind-key -n C-Space resize-pane -Z
+
         # resize-panes
         set -g mouse on
         # bind -r j resize-pane -D 5
