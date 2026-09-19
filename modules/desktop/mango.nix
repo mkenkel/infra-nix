@@ -481,7 +481,49 @@
       XDG_SESSION_TYPE = "wayland";
     };
 
-    services.mako.enable = true;
+    services.mako = {
+      enable = true;
+      settings = {
+        background-color = "#000000CC";
+        border-radius = 5;
+        border-size = 5;
+        default-timeout = 8000;
+        font = "JetBrainsMono 12";
+        format = "<sup><i>%a</i></sup>\\n<b>%s</b>\\n<sub>%b</sub>";
+        height = 300;
+        icon-location = "right";
+        icons = 1;
+        ignore-timeout = 1;
+        layer = "overlay";
+        max-icon-size = 128;
+        max-visible = 5;
+        outer-margin = 30;
+        sort = "-time";
+        text-alignment = "center";
+        width = 450;
+
+        # Low urgency: shorter timeout
+        "urgency=low".default-timeout = 3;
+
+        # Urgent notifications should stand out and stay until dismissed
+        "urgency=critical" = {
+          background-color = "#BF616A";
+          text-color = "#ECEFF4";
+          border-color = "#D08770";
+          default-timeout = 0;
+          format = "<b>%a — %s</b>\\n%b";
+        };
+
+        # Spotify / music notifications: clearer layout, persist while playing
+        "app-name=Spotify" = {
+          layer = "overlay";
+          history = 0;
+          default-timeout = 8000;
+          border-color = "#1DB954";
+          background-color = "#191414";
+        };
+      };
+    };
     wayland.systemd.target = "mango-session.target";
 
     services.mangobar = {
