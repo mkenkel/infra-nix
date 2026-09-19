@@ -9,6 +9,7 @@
       den.aspects.tmux
       den.aspects.bat
       den.aspects.fuzzel
+      den.aspects.kitty
       den.aspects.mango
       den.aspects.git
       den.aspects.gpg
