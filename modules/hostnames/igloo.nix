@@ -12,6 +12,8 @@
       den.aspects.nix-settings
       den.aspects.polkit
       den.aspects.realtime-audio
+      den.aspects.mango
+      den.aspects.greetd
       den.aspects.graphics
       den.aspects.steam
       den.aspects.social
