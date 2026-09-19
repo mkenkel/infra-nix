@@ -26,14 +26,14 @@
     };
   };
 in {
-  den.aspects.fuzzel-config = {
+  den.aspects.fuzzel = {
     includes = [
       ({
         host,
         user,
         ...
       }: {
-        name = "fuzzel-config/${user.userName}@${host.name}";
+        name = "fuzzel/${user.userName}@${host.name}";
         homeManager = fuzzelHomeManager;
       })
     ];

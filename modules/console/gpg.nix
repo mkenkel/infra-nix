@@ -29,14 +29,14 @@
     };
   };
 in {
-  den.aspects.gpg-config = {
+  den.aspects.gpg = {
     includes = [
       ({
         host,
         user,
         ...
       }: {
-        name = "gpg-config/${user.userName}@${host.name}";
+        name = "gpg/${user.userName}@${host.name}";
         homeManager = gpgHomeManager;
       })
     ];

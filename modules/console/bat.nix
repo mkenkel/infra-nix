@@ -11,14 +11,14 @@
     };
   };
 in {
-  den.aspects.bat-config = {
+  den.aspects.bat = {
     includes = [
       ({
         host,
         user,
         ...
       }: {
-        name = "bat-config/${user.userName}@${host.name}";
+        name = "bat/${user.userName}@${host.name}";
         homeManager = batHomeManager;
       })
     ];

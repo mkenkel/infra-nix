@@ -139,14 +139,14 @@
     };
   };
 in {
-  den.aspects.tmux-config = {
+  den.aspects.tmux = {
     includes = [
       ({
         host,
         user,
         ...
       }: {
-        name = "tmux-config/${user.userName}@${host.name}";
+        name = "tmux/${user.userName}@${host.name}";
         homeManager = tmuxHomeManager;
       })
     ];

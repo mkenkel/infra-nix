@@ -14,14 +14,14 @@
     };
   };
 in {
-  den.aspects.neovim-config = {
+  den.aspects.neovim = {
     includes = [
       ({
         host,
         user,
         ...
       }: {
-        name = "neovim-config/${user.userName}@${host.name}";
+        name = "neovim/${user.userName}@${host.name}";
         homeManager = neovimHomeManager;
       })
     ];
