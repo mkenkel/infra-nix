@@ -7,6 +7,14 @@
       (den.batteries.user-shell "fish")
       den.aspects.fish-config
       den.aspects.tmux-config
+      den.aspects.bat-config
+      den.aspects.fuzzel-config
+      den.aspects.git-config
+      den.aspects.gpg-config
+      den.aspects.neovim-config
+      den.aspects.starship-config
+      den.aspects.fzf-config
+      den.aspects.gpg-agent-config
     ]; # (10)
     homeManager = {pkgs, ...}: {
       home.packages = with pkgs; [
