@@ -1,7 +1,7 @@
 { den, ... }:
 {
   # user aspect
-  den.aspects.tux = {
+  den.aspects.matt = {
     includes = [
       den.batteries.define-user
       den.batteries.primary-user
