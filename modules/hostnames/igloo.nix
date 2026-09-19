@@ -47,7 +47,7 @@
         # slack
         sshpass
         taplo
-        terraform
+        # terraform
         terraform-ls
         tftp-hpa
         timoni
