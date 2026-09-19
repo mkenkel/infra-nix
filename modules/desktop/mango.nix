@@ -42,7 +42,8 @@
         {
           mods = "SUPER";
           key = "R";
-          action = "reload_config";
+          action = "spawn_shell";
+          args = [''mmsg dispatch reload_config && notify-send -a Mango -i view-refresh "Mango" "Config reloaded"''];
           desc = "Reload mango config";
         }
         {
