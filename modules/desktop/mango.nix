@@ -357,29 +357,50 @@
           mods = "NONE";
           key = "XF86AudioRaiseVolume";
           action = "spawn";
-          args = ["wpctl set-volume @DEFAULT_SINK@ 5%+"];
+          args = ["volume-osd up sink"];
           desc = "Volume up";
         }
         {
           mods = "NONE";
           key = "XF86AudioLowerVolume";
           action = "spawn";
-          args = ["wpctl set-volume @DEFAULT_SINK@ 5%-"];
+          args = ["volume-osd down sink"];
           desc = "Volume down";
         }
         {
           mods = "NONE";
           key = "XF86AudioMute";
           action = "spawn";
-          args = ["wpctl set-mute @DEFAULT_SINK@ toggle"];
+          args = ["volume-osd mute sink"];
           desc = "Mute output";
         }
         {
           mods = "SHIFT";
           key = "XF86AudioMute";
           action = "spawn";
-          args = ["wpctl set-mute @DEFAULT_SOURCE@ toggle"];
+          args = ["volume-osd mute source"];
           desc = "Mute microphone";
+        }
+        {
+          mods = "SUPER";
+          key = "Up";
+          action = "spawn";
+          args = ["volume-osd up sink"];
+          desc = "Volume up";
+        }
+        {
+          mods = "SUPER";
+          key = "Down";
+          action = "spawn";
+          args = ["volume-osd down sink"];
+          desc = "Volume down";
+        }
+        {
+          mods = "SUPER";
+          key = "M";
+          action = "spawn";
+          args = ["volume-osd mute sink"];
+          desc = "Mute output";
         }
         {
           mods = "NONE";
@@ -449,6 +470,44 @@
         | ${pkgs.gawk}/bin/awk '{$1=$1; NF=NF}1' \
         | ${pkgs.wl-clipboard}/bin/wl-copy
     '';
+
+    # Adjusts/mutes the default sink or source, then pops a mako progress-bar
+    # OSD reflecting the resulting level. The x-canonical-private-synchronous
+    # hint makes mako replace the previous "volume" toast instead of stacking.
+    volumeOsd = pkgs.writeShellScriptBin "volume-osd" ''
+      set -euo pipefail
+
+      device="@DEFAULT_SINK@"
+      tag="volume"
+      label="Volume"
+      if [ "''${2:-}" = "source" ]; then
+        device="@DEFAULT_SOURCE@"
+        tag="mic"
+        label="Microphone"
+      fi
+
+      case "''${1:-}" in
+        up) wpctl set-volume "$device" 5%+ ;;
+        down) wpctl set-volume "$device" 5%- ;;
+        mute) wpctl set-mute "$device" toggle ;;
+      esac
+
+      status=$(wpctl get-volume "$device")
+      percent=$(echo "$status" | awk '{printf "%.0f", $2 * 100}')
+
+      if echo "$status" | grep -q MUTED; then
+        notify-send -a "$label" -i audio-volume-muted \
+          -h "int:value:$percent" -h "string:x-canonical-private-synchronous:$tag" \
+          "$label muted"
+      else
+        icon="audio-volume-high"
+        [ "$percent" -lt 66 ] && icon="audio-volume-medium"
+        [ "$percent" -lt 33 ] && icon="audio-volume-low"
+        notify-send -a "$label" -i "$icon" \
+          -h "int:value:$percent" -h "string:x-canonical-private-synchronous:$tag" \
+          "$label $percent%"
+      fi
+    '';
   in {
     imports = [
       inputs.mango.hmModules.mango
@@ -460,6 +519,7 @@
       glib
       keybindsMenu
       libnotify
+      volumeOsd
       lswt
       mako
       pavucontrol
@@ -521,6 +581,37 @@
           default-timeout = 8000;
           border-color = "#1DB954";
           background-color = "#191414";
+        };
+
+        # Volume/mic OSD: compact pill anchored bottom-center with a progress
+        # bar driven by the "value" hint set in the volume-osd script.
+        "app-name=Volume" = {
+          anchor = "bottom-center";
+          outer-margin = 60;
+          width = 280;
+          height = 70;
+          history = 0;
+          layer = "overlay";
+          default-timeout = 1200;
+          border-color = "#f2994a";
+          background-color = "#1c1410E6";
+          progress-color = "over #f2994a";
+          text-alignment = "center";
+          format = "<b>%s</b>";
+        };
+        "app-name=Microphone" = {
+          anchor = "bottom-center";
+          outer-margin = 60;
+          width = 280;
+          height = 70;
+          history = 0;
+          layer = "overlay";
+          default-timeout = 1200;
+          border-color = "#6a994e";
+          background-color = "#1c1410E6";
+          progress-color = "over #6a994e";
+          text-alignment = "center";
+          format = "<b>%s</b>";
         };
       };
     };
@@ -713,6 +804,22 @@
         ];
         repeat_rate = 40;
         repeat_delay = 200;
+
+        # Notification/OSD popups (mako) are layer-shell surfaces, so they
+        # fade in/out via layer_animations rather than the window animation
+        # toggle, which is left off to avoid animating every tiled window.
+        layer_animations = 1;
+        layer_animation_type_open = "fade";
+        layer_animation_type_close = "fade";
+        animation_duration_open = 180;
+        animation_duration_close = 150;
+        animation_curve_open = "0.46,1.0,0.29,1";
+        animation_curve_close = "0.46,1.0,0.29,1";
+
+        windowrule = [
+          "isfloating:1,appid:pavucontrol"
+        ];
+
         bind = map bindString keybinds;
       };
     };

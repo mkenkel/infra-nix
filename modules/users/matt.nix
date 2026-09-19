@@ -14,6 +14,7 @@
       den.aspects.librewolf
       den.aspects.kitty
       den.aspects.mango
+      den.aspects.gtk
       den.aspects.git
       den.aspects.gpg
       den.aspects.neovim
