@@ -35,7 +35,7 @@
         lsof
         neovim
         nwg-look
-        obsidian
+        # obsidian
         playerctl
         prismlauncher
         qalculate-qt
