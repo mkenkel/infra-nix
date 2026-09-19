@@ -56,7 +56,7 @@
         vial
         virtiofsd
         vlc
-        vscode
+        # vscode
         vscodium
         wget
         # wineWowPackages.stable
