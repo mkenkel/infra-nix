@@ -34,7 +34,7 @@
         nixfmt
         openssl
         pa-notify
-        packer
+        # packer
         paperkey
         pavucontrol # Lets you disable inputs/outputs, can help if game auto-connects to bad IOs
         podman
