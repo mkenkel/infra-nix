@@ -1,7 +1,12 @@
 {den, ...}: {
   den.aspects.igloo = {
     # (6)
-    includes = [den.batteries.hostname]; # (7)
+    includes = [
+      den.batteries.hostname
+      den.aspects.boot-systemd
+      den.aspects.virt-docker
+      den.aspects.locale-us-eastern
+    ]; # (7)
     nixos = {pkgs, ...}: {
       imports = [./_nixos/configuration.nix]; # (8)
       environment.systemPackages = with pkgs; [
