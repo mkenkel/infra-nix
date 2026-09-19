@@ -5,7 +5,6 @@
       den.batteries.define-user
       den.batteries.primary-user
       (den.batteries.user-shell "fish")
-      (den.batteries.unfree ["obsidian" "spotify"])
     ]; # (10)
     homeManager = {pkgs, ...}: {
       home.packages = with pkgs; [
