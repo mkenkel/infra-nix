@@ -13,14 +13,14 @@
     };
   };
 in {
-  den.aspects.gpg-agent-config = {
+  den.aspects.gpg-agent = {
     includes = [
       ({
         host,
         user,
         ...
       }: {
-        name = "gpg-agent-config/${user.userName}@${host.name}";
+        name = "gpg-agent/${user.userName}@${host.name}";
         homeManager = gpgAgentHomeManager;
       })
     ];

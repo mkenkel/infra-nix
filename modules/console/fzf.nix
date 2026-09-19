@@ -5,14 +5,14 @@
     };
   };
 in {
-  den.aspects.fzf-config = {
+  den.aspects.fzf = {
     includes = [
       ({
         host,
         user,
         ...
       }: {
-        name = "fzf-config/${user.userName}@${host.name}";
+        name = "fzf/${user.userName}@${host.name}";
         homeManager = fzfHomeManager;
       })
     ];

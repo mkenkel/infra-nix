@@ -120,14 +120,14 @@
     };
   };
 in {
-  den.aspects.starship-config = {
+  den.aspects.starship = {
     includes = [
       ({
         host,
         user,
         ...
       }: {
-        name = "starship-config/${user.userName}@${host.name}";
+        name = "starship/${user.userName}@${host.name}";
         homeManager = starshipHomeManager;
       })
     ];

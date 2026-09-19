@@ -9,14 +9,14 @@
     };
   };
 in {
-  den.aspects.git-config = {
+  den.aspects.git = {
     includes = [
       ({
         host,
         user,
         ...
       }: {
-        name = "git-config/${user.userName}@${host.name}";
+        name = "git/${user.userName}@${host.name}";
         homeManager = gitHomeManager;
       })
     ];

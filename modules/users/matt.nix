@@ -5,21 +5,20 @@
       den.batteries.define-user
       den.batteries.primary-user
       (den.batteries.user-shell "fish")
-      den.aspects.fish-config
-      den.aspects.tmux-config
-      den.aspects.bat-config
-      den.aspects.fuzzel-config
-      den.aspects.git-config
-      den.aspects.gpg-config
-      den.aspects.neovim-config
-      den.aspects.starship-config
-      den.aspects.fzf-config
-      den.aspects.gpg-agent-config
+      den.aspects.fish
+      den.aspects.tmux
+      den.aspects.bat
+      den.aspects.fuzzel
+      den.aspects.git
+      den.aspects.gpg
+      den.aspects.neovim
+      den.aspects.starship
+      den.aspects.fzf
+      den.aspects.gpg-agent
     ]; # (10)
     nixos = {pkgs, ...}: {
       users.users.matt.packages = with pkgs; [
         vim
-        git
       ];
     };
     homeManager = {pkgs, ...}: {
@@ -34,9 +33,7 @@
         fastfetch
         feh
         ffmpeg
-        fish
         #freecad
-        fzf
         gimp
         giph
         grc
@@ -61,7 +58,6 @@
         showmethekey
         sops
         # spotify
-        starship
         tree
         # via
         virt-manager

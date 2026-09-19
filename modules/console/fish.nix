@@ -86,14 +86,14 @@
     };
   };
 in {
-  den.aspects.fish-config = {
+  den.aspects.fish = {
     includes = [
       ({
         host,
         user,
         ...
       }: {
-        name = "fish-config/${user.userName}@${host.name}";
+        name = "fish/${user.userName}@${host.name}";
         homeManager = fishHomeManager;
       })
     ];
