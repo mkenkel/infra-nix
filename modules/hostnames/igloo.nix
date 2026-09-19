@@ -44,7 +44,7 @@
         qemu
         qpwgraph # Lets you view pipewire graph and connect IOs
         rtaudio
-        slack
+        # slack
         sshpass
         taplo
         terraform
