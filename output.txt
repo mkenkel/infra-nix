@@ -1,0 +1,29 @@
+Sep 19 15:12:46 igloo systemd[1]: home-manager-matt.service: Consumed 602ms CPU time over 708ms wall clock time,>
+Sep 19 15:14:46 igloo systemd[1]: Starting Home Manager environment for matt...
+Sep 19 15:14:46 igloo hm-activate-matt[11408]: Starting Home Manager activation
+Sep 19 15:14:46 igloo hm-activate-matt[11408]: Activating checkFilesChanged
+Sep 19 15:14:46 igloo hm-activate-matt[11408]: Activating checkLinkTargets
+Sep 19 15:14:46 igloo hm-activate-matt[11408]: Activating writeBoundary
+Sep 19 15:14:46 igloo hm-activate-matt[11408]: Activating createGpgHomedir
+Sep 19 15:14:46 igloo hm-activate-matt[11408]: Activating linkGeneration
+Sep 19 15:14:46 igloo hm-activate-matt[11408]: Cleaning up orphan links from /home/matt
+Sep 19 15:14:46 igloo hm-activate-matt[11408]: Creating home file links in /home/matt
+Sep 19 15:14:46 igloo hm-activate-matt[11408]: Activating batCache
+Sep 19 15:14:46 igloo hm-activate-matt[11588]: No themes were found in '/home/matt/.config/bat/themes', using th>
+Sep 19 15:14:47 igloo hm-activate-matt[11588]: No syntaxes were found in '/home/matt/.config/bat/syntaxes', usin>
+Sep 19 15:14:47 igloo hm-activate-matt[11588]: Writing theme set to /home/matt/.cache/bat/themes.bin ... okay
+Sep 19 15:14:47 igloo hm-activate-matt[11588]: Writing syntax set to /home/matt/.cache/bat/syntaxes.bin ... okay
+Sep 19 15:14:47 igloo hm-activate-matt[11588]: Writing metadata to folder /home/matt/.cache/bat ... okay
+Sep 19 15:14:47 igloo hm-activate-matt[11408]: Activating installPackages
+Sep 19 15:14:47 igloo hm-activate-matt[11590]: error: syntax error, unexpected end of file
+Sep 19 15:14:47 igloo hm-activate-matt[11590]:        at /nix/store/q54h7bl1m7mkgdfxhgcb3p2jpmm05shq-env-manifes>
+Sep 19 15:14:47 igloo hm-activate-matt[11408]: Oops, Nix failed to install your new Home Manager profile!
+Sep 19 15:14:47 igloo hm-activate-matt[11408]: Perhaps there is a conflict with a package that was installed usi>
+Sep 19 15:14:47 igloo hm-activate-matt[11408]: "nix-env -i"? Try running
+Sep 19 15:14:47 igloo hm-activate-matt[11408]:     nix-env -q
+Sep 19 15:14:47 igloo hm-activate-matt[11408]: and if there is a conflicting package you can remove it with
+Sep 19 15:14:47 igloo hm-activate-matt[11408]:     nix-env -e {package name}
+Sep 19 15:14:47 igloo hm-activate-matt[11408]: Then try activating your Home Manager configuration again.
+Sep 19 15:14:47 igloo systemd[1]: home-manager-matt.service: Main process exited, code=exited, status=1/FAILURE
+Sep 19 15:14:47 igloo systemd[1]: home-manager-matt.service: Failed with result 'exit-code'.
+Sep 19 15:14:47 igloo systemd[1]: Failed to start Home Manager environment for matt.
