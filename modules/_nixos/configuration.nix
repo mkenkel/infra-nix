@@ -16,7 +16,7 @@
  
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
 
-  networking.hostName = "nixy"; # Define your hostname.
+  networking.hostName = "igloo"; # Define your hostname.
 
   # Configure network connections interactively with nmcli or nmtui.
   networking.networkmanager.enable = true;
