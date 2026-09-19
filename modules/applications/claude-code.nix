@@ -14,7 +14,7 @@
       home.file.".claude/statusline.sh" = {
         executable = true;
         text = ''
-          #!/bin/bash
+          #!/usr/bin/env bash
           input=$(cat)
 
           MODEL=$(echo "$input" | jq -r '.model.display_name')
@@ -34,7 +34,33 @@
           [ "$FILLED" -gt 0 ] && printf -v FILL "%''${FILLED}s" && BAR="''${FILL// /▓}"
           [ "$EMPTY" -gt 0 ] && printf -v PAD "%''${EMPTY}s" && BAR="''${BAR}''${PAD// /░}"
 
-          echo "[$MODEL] $BAR $PCT% | $COST_FMT | ''${MINS}m ''${SECS}s"
+          fmt_resets_in() {
+            local resets_at="$1"
+            [ -z "$resets_at" ] && return
+            local now secs_left h m
+            now=$(date +%s)
+            secs_left=$((resets_at - now))
+            [ "$secs_left" -lt 0 ] && secs_left=0
+            h=$((secs_left / 3600))
+            m=$(((secs_left % 3600) / 60))
+            printf '%dh%dm' "$h" "$m"
+          }
+
+          FIVE_H_PCT=$(echo "$input" | jq -r '.rate_limits.five_hour.used_percentage // empty')
+          FIVE_H_RESET=$(echo "$input" | jq -r '.rate_limits.five_hour.resets_at // empty')
+          WEEK_PCT=$(echo "$input" | jq -r '.rate_limits.seven_day.used_percentage // empty')
+          WEEK_RESET=$(echo "$input" | jq -r '.rate_limits.seven_day.resets_at // empty')
+
+          LIMITS=""
+          if [ -n "$FIVE_H_PCT" ]; then
+            LIMITS="5h: $(printf '%.0f' "$FIVE_H_PCT")% (resets $(fmt_resets_in "$FIVE_H_RESET"))"
+          fi
+          if [ -n "$WEEK_PCT" ]; then
+            WEEK_STR="7d: $(printf '%.0f' "$WEEK_PCT")% (resets $(fmt_resets_in "$WEEK_RESET"))"
+            LIMITS="''${LIMITS:+$LIMITS | }$WEEK_STR"
+          fi
+
+          echo "[$MODEL] $BAR $PCT% | $COST_FMT | ''${MINS}m ''${SECS}s''${LIMITS:+ | $LIMITS}"
         '';
       };
     };

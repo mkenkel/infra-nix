@@ -1,24 +1,25 @@
 {den, ...}: let
   programmingHomeManager = {pkgs, ...}: {
-    home.packages = [
-      pkgs.ansible
-      pkgs.ansible-lint
-      pkgs.ansible-navigator
-      pkgs.arduino-ide
-      pkgs.docker-compose-language-service
-      pkgs.cue
-      pkgs.gcc
-      pkgs.gh
-      pkgs.gitflow
-      pkgs.gnumake
-      pkgs.lazygit
-      pkgs.lua-language-server
-      pkgs.kubectl
-      pkgs.nim
-      pkgs.nimble
-      pkgs.nil
-      pkgs.nimlsp
-      pkgs.nodejs
+    home.packages = with pkgs; [
+      ansible
+      ansible-lint
+      ansible-navigator
+      arduino-ide
+      docker-compose-language-service
+      cue
+      gcc
+      gh
+      gitflow
+      gnumake
+      jq
+      lazygit
+      lua-language-server
+      kubectl
+      nim
+      nimble
+      nil
+      nimlsp
+      nodejs
       (pkgs.python313.withPackages (
         ps:
           with ps; [
