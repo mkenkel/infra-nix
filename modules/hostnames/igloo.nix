@@ -24,7 +24,7 @@
       environment.systemPackages = with pkgs; [
         age
         alejandra
-        bashSnippets
+        bash-snippets
         bottles
         cilium-cli
         curl
