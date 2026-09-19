@@ -5,6 +5,7 @@
       den.batteries.hostname
       den.aspects.boot-systemd
       den.aspects.virt-docker
+      den.aspects.virt-podman
       den.aspects.locale-us-eastern
       den.aspects.network-manager
       den.aspects.openssh
