@@ -51,8 +51,8 @@
         buffer-scale = 1;
 
         modules-left = ["workspaces" "layout" "window"];
-        modules-center = [];
-        modules-right = ["pulseaudio" "tray" "clock#date" "clock#time"];
+        modules-center = ["clock#date" "clock#time"];
+        modules-right = ["pulseaudio" "tray"];
 
         workspaces = {
           hide-empty = false;
@@ -70,6 +70,8 @@
           format-muted = "󰖁 {volume}%";
           icons = ["󰕿" "󰖀" "󰕾"];
           on-click = "${pkgs.pavucontrol}/bin/pavucontrol";
+          on-scroll-up = "wpctl set-volume @DEFAULT_SINK@ 5%+";
+          on-scroll-down = "wpctl set-volume @DEFAULT_SINK@ 5%-";
         };
 
         "clock#date".format = " {:L%b %d · %A}";
