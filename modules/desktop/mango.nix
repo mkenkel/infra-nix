@@ -10,7 +10,10 @@
   }: let
     wallpaperPath = "${config.home.homeDirectory}/.config/wallpapers/default.png";
   in {
-    imports = [inputs.mango.hmModules.mango];
+    imports = [
+      inputs.mango.hmModules.mango
+      inputs.mangobar.homeManagerModules.default
+    ];
     home.packages = with pkgs; [
       fuzzel
       glib
@@ -23,7 +26,6 @@
       swaylock-effects
       swaynotificationcenter
       vicinae
-      waybar
       wayland-pipewire-idle-inhibit
       wl-clipboard
     ];
@@ -40,103 +42,138 @@
     services.mako.enable = true;
     wayland.systemd.target = "mango-session.target";
 
-    programs.waybar = {
+    services.mangobar = {
       enable = true;
-      settings.mainBar = {
+      systemdTarget = "mango-session.target";
+      settings = {
         layer = "top";
-        position = "top";
-        height = 40;
-        spacing = 5;
-        output = ["DP-3"];
-        modules-left = [
-          "wlr/workspaces"
-          "pulseaudio"
-        ];
-        modules-center = ["clock"];
-        modules-right = ["tray"];
+        height = 36;
+        buffer-scale = 1;
 
-        "wlr/workspaces" = {
-          format = "{name}";
-          all-outputs = false;
+        modules-left = ["workspaces" "layout" "window"];
+        modules-center = [];
+        modules-right = ["pulseaudio" "tray" "clock#date" "clock#time"];
+
+        workspaces = {
+          hide-empty = false;
+          overview-label = "OVERVIEW";
+          on-click = "activate";
+          on-click-right = "toggle";
         };
 
-        tray = {
-          spacing = 10;
-          icon-size = 20;
-        };
+        layout.format = "{}";
+
+        window.format = "{}";
 
         pulseaudio = {
           format = "{icon} {volume}%";
           format-muted = "󰖁 {volume}%";
-          format-icons.default = [
-            "󰕿"
-            "󰖀"
-            "󰕾"
-          ];
+          icons = ["󰕿" "󰖀" "󰕾"];
           on-click = "${pkgs.pavucontrol}/bin/pavucontrol";
         };
 
-        clock = {
-          format = "{:%I:%M %p}";
-          format-alt = "{:%A, %B %d, %Y - %I:%M %p}";
-          tooltip-format = "<tt><small>{calendar}</small></tt>";
-          calendar = {
-            mode = "month";
-            format = {
-              months = "<span color='#fad07a'><b>{}</b></span>";
-              days = "<span color='#e8e8d3'>{}</span>";
-              today = "<span color='#cf6a4c'><b><u>{}</u></b></span>";
-            };
-          };
+        "clock#date".format = " {:L%b %d · %A}";
+        "clock#time".format = " {:L%I:%M %p}";
+
+        tray = {
+          icon-size = 20;
+          spacing = 10;
         };
       };
-      style = ''
-        * {
-          border: none;
-          border-radius: 5px;
-          font-family: Source Code Pro;
-        }
-        window#waybar {
-          background: transparent;
-          color: #e8e8d3;
-        }
-        #workspaces {
-          background: #151515;
-          border: 1px solid #1f1f1f;
-          margin: 5px;
-          padding: 2px;
-        }
-        #workspaces button {
-          padding: 0 5px;
-          color: #888888;
-          border-radius: 3px;
-        }
-        #workspaces button.active {
-          background: #597bc5;
-          color: #151515;
-        }
-        #tray {
-          background: #151515;
-          border: 1px solid #1f1f1f;
-          padding: 0 10px;
-          margin: 5px;
-          color: #e8e8d3;
-        }
-        #pulseaudio {
-          background: #151515;
-          border: 1px solid #1f1f1f;
-          padding: 0 10px;
-          margin: 5px;
-          color: #99ad6a;
-        }
-        #clock {
-          background: #151515;
-          border: 1px solid #1f1f1f;
-          padding: 0 10px;
-          margin: 5px;
-          color: #8fbfdc;
-        }
-      '';
+    };
+
+    xdg.configFile."mangobar/style.css".text = ''
+      * {
+        font-family: Source Code Pro;
+        color: #f5e6d3;
+        background-color: #1c1410;
+        padding: 0px 10px;
+        margin: 5px 2px;
+        border-radius: 6px;
+      }
+
+      #bar {
+        background: none;
+        margin: 5px 8px;
+      }
+
+      #tags {
+        padding: 0px 8px;
+      }
+
+      #tags.active {
+        background-color: #f2994a;
+        color: #1c1410;
+      }
+      #tags.occupied {
+        background-color: #2a201a;
+        color: #f5e6d3;
+      }
+      #tags.urgent {
+        background-color: #d9534f;
+        color: #1c1410;
+      }
+      #tags.empty {
+        background-color: #151009;
+        color: #7a6a5a;
+      }
+
+      #overview {
+        background-color: #f2994a;
+        color: #1c1410;
+      }
+
+      #layout {
+        background-color: #6a994e;
+        color: #151009;
+        min-width: 28px;
+      }
+
+      #title {
+        background-color: #2a201a;
+        color: #f5e6d3;
+      }
+
+      #volume {
+        background-color: #f4c95d;
+        color: #1c1410;
+      }
+
+      #tray {
+        background-color: #2a201a;
+      }
+
+      #clock {
+        background-color: #f4c95d;
+        color: #1c1410;
+      }
+      #clock.date {
+        background-color: #6a994e;
+        color: #151009;
+      }
+
+      menu {
+        background-color: #151009;
+        border-color: #f5e6d3;
+        border-radius: 8px;
+      }
+      menuitem {
+        color: #f5e6d3;
+      }
+      menuitem:hover {
+        background-color: #f2994a;
+        color: #1c1410;
+      }
+    '';
+
+    services.wlsunset = {
+      enable = true;
+      latitude = 39.1;
+      longitude = -84.6;
+      temperature = {
+        day = 6500;
+        night = 4000;
+      };
     };
 
     wayland.windowManager.mango = {
@@ -145,7 +182,6 @@
         if [ -f "${wallpaperPath}" ]; then
           swaybg -i "${wallpaperPath}" -m fill &
         fi
-        waybar &
       '';
       settings = {
         monitorrule = [
