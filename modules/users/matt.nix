@@ -47,7 +47,7 @@
         # spotify
         starship
         tree
-        via
+        # via
         virt-manager
         virt-viewer
         wev
