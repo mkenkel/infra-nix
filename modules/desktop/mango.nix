@@ -1,4 +1,8 @@
-{den, inputs, ...}: let
+{
+  den,
+  inputs,
+  ...
+}: let
   mangoHomeManager = {
     config,
     pkgs,
@@ -147,6 +151,8 @@
         monitorrule = [
           "name:^DP-3$,width:3840,height:2160,refresh:143.962997,scale:1.25,x:0,y:0"
         ];
+        repeat_rate = 40;
+        repeat_delay = 200;
         bind = [
           "SUPER,F,togglefullscreen"
           "SUPER,T,togglefloating"

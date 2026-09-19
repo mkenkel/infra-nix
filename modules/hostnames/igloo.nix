@@ -23,6 +23,7 @@
       system.stateVersion = "26.05";
       environment.systemPackages = with pkgs; [
         age
+        alejandra
         bashSnippets
         bottles
         cilium-cli
