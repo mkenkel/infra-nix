@@ -791,6 +791,42 @@
       };
     };
 
+    services.swayidle = {
+      enable = true;
+      timeouts = [
+        {
+          timeout = 30 * 60;
+          command = "${pkgs.swaylock-effects}/bin/swaylock -f";
+        }
+        {
+          timeout = 2 * 60 * 60;
+          command = "${pkgs.systemd}/bin/systemctl suspend";
+        }
+      ];
+      events = {
+        # Lock before any suspend, not just ones swayidle itself triggers
+        # (e.g. lid close, power button, manual `systemctl suspend`).
+        before-sleep = "${pkgs.swaylock-effects}/bin/swaylock -f";
+      };
+    };
+
+    # Not a home-manager service module upstream; wire it up manually so it
+    # actually inhibits idle (via idle-inhibit-unstable-v1) while media plays,
+    # instead of just sitting installed and unused.
+    systemd.user.services.wayland-pipewire-idle-inhibit = {
+      Unit = {
+        Description = "Suspend idling while media plays through PipeWire";
+        PartOf = ["mango-session.target"];
+        After = ["mango-session.target"];
+      };
+      Service = {
+        ExecStart = "${pkgs.wayland-pipewire-idle-inhibit}/bin/wayland-pipewire-idle-inhibit";
+        Restart = "always";
+        RestartSec = 2;
+      };
+      Install.WantedBy = ["mango-session.target"];
+    };
+
     wayland.windowManager.mango = {
       enable = true;
       autostart_sh = ''
@@ -818,6 +854,9 @@
 
         windowrule = [
           "isfloating:1,appid:pavucontrol"
+          "isfloating:1,appid:qalculate-qt"
+          "tags:8,appid:^(discord|vesktop)$"
+          "tags:9,appid:spotify"
         ];
 
         bind = map bindString keybinds;
