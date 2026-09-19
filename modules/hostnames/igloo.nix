@@ -11,6 +11,9 @@
       den.aspects.nix-settings
       den.aspects.polkit
       den.aspects.realtime-audio
+      den.aspects.graphics
+      den.aspects.steam
+      den.aspects.social
     ]; # (7)
     nixos = {pkgs, ...}: {
       imports = [./_nixos/hardware-configuration.nix];
