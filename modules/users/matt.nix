@@ -4,6 +4,7 @@
     includes = [
       den.batteries.define-user
       den.batteries.primary-user
+      (den.batteries.user-shell "fish")
     ]; # (10)
     homeManager = {pkgs, ...}: {
       home.packages = with pkgs; [
