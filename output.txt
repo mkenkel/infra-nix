@@ -1,3 +1,23 @@
  ➜  nix-env -q
 error: syntax error, unexpected end of file
        at /nix/store/q54h7bl1m7mkgdfxhgcb3p2jpmm05shq-env-manifest.nix:1:1:
+
+03:45:27 PM
+matt in  igloo in infra-nix on  main took 1m8s
+ ➜  readlink -f ~/.nix-profile
+    readlink -f ~/.nix-profile/manifest.nix
+    wc -c "$(readlink -f ~/.nix-profile)/manifest.nix"
+    sed -n '1,40p' "$(readlink -f ~/.nix-profile)/manifest.nix"
+/nix/store/v8gz1qfdqbcv4spndka9q3jq7xh2ziwg-user-environment
+/nix/store/q54h7bl1m7mkgdfxhgcb3p2jpmm05shq-env-manifest.nix
+0 /nix/store/v8gz1qfdqbcv4spndka9q3jq7xh2ziwg-user-environment/manifest.nix
+
+03:45:28 PM
+matt in  igloo in infra-nix on  main
+ ➜  nix-store --query -- deriver /nix/store/q54h7bl1m7mkgdfxhgcb3p2jpmm05shq-env-manifest.nix
+    cat /nix/store/q54h7bl1m7mkgdfxhgcb3p2jpmm05shq-env-manifest.nix
+error: path "/home/matt/repos/infra-nix/deriver" is not in the Nix store
+
+03:45:38 PM
+matt in  igloo in infra-nix on  main
+ ➜
