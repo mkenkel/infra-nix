@@ -27,3 +27,53 @@ Sep 19 15:14:47 igloo hm-activate-matt[11408]: Then try activating your Home Man
 Sep 19 15:14:47 igloo systemd[1]: home-manager-matt.service: Main process exited, code=exited, status=1/FAILURE
 Sep 19 15:14:47 igloo systemd[1]: home-manager-matt.service: Failed with result 'exit-code'.
 Sep 19 15:14:47 igloo systemd[1]: Failed to start Home Manager environment for matt.
+
+matt in  igloo in infra-nix on  main
+ ➜  git pull && sudo nixos-rebuild switch --flake .#igloo
+remote: Enumerating objects: 7, done.
+remote: Counting objects: 100% (7/7), done.
+remote: Compressing objects: 100% (5/5), done.
+remote: Total 7 (delta 2), reused 5 (delta 2), pack-reused 0 (from 0)
+Unpacking objects: 100% (7/7), 4.84 KiB | 550.00 KiB/s, done.
+From github.com:mkenkel/infra-nix
+   07cb74d..9a4d82a  main                                 -> origin/main
+ * [new branch]      copilot/port-river-config-to-mangowc -> origin/copilot/port-river-config-to-mangowc
+Updating 07cb74d..9a4d82a
+Fast-forward
+ modules/desktop/mango.nix | 224 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-
+ 1 file changed, 223 insertions(+), 1 deletion(-)
+[sudo] password for matt:
+building the system configuration...
+evaluation warning: `greetd.tuigreet` was renamed to `tuigreet`
+evaluation warning: 'bashSnippets' has been renamed to 'bash-snippets'
+evaluation warning: 'bashSnippets' has been renamed to 'bash-snippets'
+Checking switch inhibitors... done
+activating the configuration...
+setting up /etc...
+reloading user units for matt...
+restarting the following user units: nixos-activation.service
+restarting sysinit-reactivation.target
+the following new units were started: NetworkManager-dispatcher.service, sysinit-reactivation.target, systemd-tmpfiles-resetup.service
+warning: the following units failed: home-manager-matt.service
+× home-manager-matt.service - Home Manager environment for matt
+     Loaded: loaded (/etc/systemd/system/home-manager-matt.service; enabled; preset: ignored)
+     Active: failed (Result: exit-code) since Sat 2026-09-19 15:35:45 EDT; 260ms ago
+ Invocation: b233ada25ac44c4c86a0f7635cecf2ac
+    Process: 19806 ExecStart=/nix/store/3l50x6iq16h6bp9l4vkk0vwla552g54z-hm-setup-env /nix/store/gw0938sabpm894m7syky3hlrrxdi24xm-home-manager-generation (code=exited, status=1/FAILURE)
+   Main PID: 19806 (code=exited, status=1/FAILURE)
+         IP: 0B in, 0B out
+         IO: 0B read, 0B written
+   Mem peak: 34.3M
+        CPU: 591ms
+
+Sep 19 15:35:45 igloo hm-activate-matt[19806]: Oops, Nix failed to install your new Home Manager profile!
+Sep 19 15:35:45 igloo hm-activate-matt[19806]: Perhaps there is a conflict with a package that was installed using
+Sep 19 15:35:45 igloo hm-activate-matt[19806]: "nix-env -i"? Try running
+Sep 19 15:35:45 igloo hm-activate-matt[19806]:     nix-env -q
+Sep 19 15:35:45 igloo hm-activate-matt[19806]: and if there is a conflicting package you can remove it with
+Sep 19 15:35:45 igloo hm-activate-matt[19806]:     nix-env -e {package name}
+Sep 19 15:35:45 igloo hm-activate-matt[19806]: Then try activating your Home Manager configuration again.
+Sep 19 15:35:45 igloo systemd[1]: home-manager-matt.service: Main process exited, code=exited, status=1/FAILURE
+Sep 19 15:35:45 igloo systemd[1]: home-manager-matt.service: Failed with result 'exit-code'.
+Sep 19 15:35:45 igloo systemd[1]: Failed to start Home Manager environment for matt.
+Command 'systemd-run -E LOCALE_ARCHIVE -E NIXOS_INSTALL_BOOTLOADER -E NIXOS_NO_CHECK --collect --no-ask-password --pipe --quiet --service-type=exec --unit=nixos-rebuild-switch-to-configuration /nix/store/sdsd4lpq14nvmf6w6zzy43gyxzgf2zqr-nixos-system-igloo-26.05.20260919.99383fa/bin/switch-to-configuration switch' returned non-zero exit status 4.
