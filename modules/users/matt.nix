@@ -5,6 +5,7 @@
       den.batteries.define-user
       den.batteries.primary-user
       (den.batteries.user-shell "fish")
+      den.aspects.fish-config
     ]; # (10)
     homeManager = {pkgs, ...}: {
       home.packages = with pkgs; [
