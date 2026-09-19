@@ -8,6 +8,7 @@
       den.aspects.fish
       den.aspects.tmux
       den.aspects.bat
+      den.aspects.claude
       den.aspects.fuzzel
       den.aspects.firefox
       den.aspects.kitty
