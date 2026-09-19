@@ -6,9 +6,13 @@
       den.aspects.boot-systemd
       den.aspects.virt-docker
       den.aspects.locale-us-eastern
+      den.aspects.network-manager
+      den.aspects.openssh
+      den.aspects.nix-settings
     ]; # (7)
     nixos = {pkgs, ...}: {
-      imports = [./_nixos/configuration.nix]; # (8)
+      imports = [./_nixos/hardware-configuration.nix];
+      system.stateVersion = "26.05";
       environment.systemPackages = with pkgs; [
         age
         bashSnippets
@@ -58,6 +62,7 @@
         unzip
         unzip # Used by patch-nixos.sh
         vial
+        vim
         virtiofsd
         vlc
         # vscode
