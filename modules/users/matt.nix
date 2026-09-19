@@ -44,7 +44,7 @@
         slurp
         showmethekey
         sops
-        spotify
+        # spotify
         starship
         tree
         via
