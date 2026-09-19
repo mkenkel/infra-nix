@@ -11,6 +11,7 @@
         "extensions.activeThemeID" = "firefox-compact-dark@mozilla.org";
         "layout.css.prefers-color-scheme.content-override" = 0;
         "ui.systemUsesDarkTheme" = 1;
+        "general.autoScroll" = true;
       };
       profiles.default.search = {
         force = true;
