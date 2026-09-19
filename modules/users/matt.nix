@@ -19,6 +19,7 @@
       den.aspects.fzf
       den.aspects.gpg-agent
       den.aspects.programming
+      den.aspects.spotify
     ]; # (10)
     nixos = {pkgs, ...}: {
       users.users.matt.packages = with pkgs; [
