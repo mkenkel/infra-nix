@@ -15,7 +15,6 @@
         btop
         chafa
         cmatrix
-        github-copilot-cli
         fastfetch
         feh
         ffmpeg
