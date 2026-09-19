@@ -1,10 +1,9 @@
-{ den, ... }:
-{
+{den, ...}: {
   den.aspects.igloo = {
     # (6)
-    includes = [ den.batteries.hostname ]; # (7)
-    nixos = { pkgs, ... }: {
-      imports = [ ./_nixos/configuration.nix ]; # (8)
+    includes = [den.batteries.hostname]; # (7)
+    nixos = {pkgs, ...}: {
+      imports = [./_nixos/configuration.nix]; # (8)
       environment.systemPackages = with pkgs; [
         age
         bashSnippets

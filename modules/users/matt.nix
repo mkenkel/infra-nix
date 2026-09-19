@@ -1,12 +1,11 @@
-{ den, ... }:
-{
+{den, ...}: {
   den.aspects.matt = {
     # (9)
     includes = [
       den.batteries.define-user
       den.batteries.primary-user
     ]; # (10)
-    homeManager = { pkgs, ... }: {
+    homeManager = {pkgs, ...}: {
       home.packages = with pkgs; [
         alacritty
         alacritty-theme
