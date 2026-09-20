@@ -108,9 +108,16 @@
         {
           mods = "ALT+SHIFT";
           key = "S";
-          action = "spawn_shell";
-          args = [''${pkgs.grim}/bin/grim -g "$(${pkgs.slurp}/bin/slurp)" - | ${pkgs.wl-clipboard}/bin/wl-copy''];
-          desc = "Screenshot region to clipboard";
+          action = "spawn";
+          args = ["mango-screenshot" "region"];
+          desc = "Screenshot region to clipboard (frozen)";
+        }
+        {
+          mods = "ALT+CTRL+SHIFT";
+          key = "S";
+          action = "spawn";
+          args = ["mango-screenshot" "region-annotate"];
+          desc = "Screenshot region, annotate, then copy";
         }
         {
           mods = "ALT+CTRL";
@@ -127,6 +134,12 @@
           desc = "Toggle notification center";
         }
 
+        {
+          mods = "SUPER";
+          key = "Tab";
+          action = "overcircle";
+          desc = "Open overview / cycle focus while open";
+        }
         {
           mods = "SUPER";
           key = "J";
@@ -568,6 +581,54 @@
       notify-send -a Mango -i view-grid "Layout" "$layout"
     '';
 
+    # Region-select screenshots, per https://github.com/mangowm/mango/wiki/screenshot:
+    # freeze the screen with wayfreeze before slurp so the selection is made
+    # against a still frame (no more racing a moving cursor/animation, and
+    # menus/tooltips that'd vanish on click stay put to be selected), then
+    # either copy straight to the clipboard or hand it to satty to annotate
+    # first. Nothing is ever written to disk - matches the existing
+    # clipboard-only screenshot binds below.
+    screenshot = pkgs.writeShellScriptBin "mango-screenshot" ''
+      set -euo pipefail
+
+      freeze_start() {
+        pipe=$(mktemp -u).fifo
+        mkfifo "$pipe"
+        ${pkgs.wayfreeze}/bin/wayfreeze --after-freeze-timeout 100 --after-freeze-cmd "echo > $pipe" &
+        wayfreeze_pid=$!
+        read -r _ < "$pipe"
+        rm -f "$pipe"
+      }
+
+      freeze_stop() {
+        kill "$wayfreeze_pid" 2>/dev/null || true
+      }
+
+      case "''${1:-region}" in
+        region)
+          freeze_start
+          geometry=$(${pkgs.slurp}/bin/slurp -d) || { freeze_stop; exit 1; }
+          freeze_stop
+          [ -n "$geometry" ] || exit 1
+          ${pkgs.grim}/bin/grim -g "$geometry" - | ${pkgs.wl-clipboard}/bin/wl-copy
+          ;;
+        region-annotate)
+          freeze_start
+          geometry=$(${pkgs.slurp}/bin/slurp -d) || { freeze_stop; exit 1; }
+          freeze_stop
+          [ -n "$geometry" ] || exit 1
+          ${pkgs.grim}/bin/grim -g "$geometry" - | ${pkgs.satty}/bin/satty --filename - \
+            --copy-command ${pkgs.wl-clipboard}/bin/wl-copy \
+            --actions-on-enter save-to-clipboard \
+            --early-exit
+          ;;
+        *)
+          echo "usage: mango-screenshot {region|region-annotate}" >&2
+          exit 1
+          ;;
+      esac
+    '';
+
     # Adjusts/mutes the default sink or source, then pops a mako progress-bar
     # OSD reflecting the resulting level. The x-canonical-private-synchronous
     # hint makes mako replace the previous "volume" toast instead of stacking.
@@ -616,6 +677,9 @@
       glib
       keybindsMenu
       layoutPicker
+      satty
+      screenshot
+      wayfreeze
       libnotify
       volumeOsd
       lswt
