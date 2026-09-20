@@ -30,45 +30,28 @@
       wlr-randr
     ];
 
-    home.sessionVariables = {
-      NIXOS_OZONE_WL = "1";
-      QT_QPA_PLATFORM = "wayland";
-      SDL_VIDEODRIVER = "wayland";
-      XDG_CURRENT_DESKTOP = "river";
-      XDG_SESSION_DESKTOP = "river";
-      XDG_SESSION_TYPE = "wayland";
-    };
+    # NIXOS_OZONE_WL/QT_QPA_PLATFORM/SDL_VIDEODRIVER are already set
+    # identically by the mango aspect. XDG_CURRENT_DESKTOP/XDG_SESSION_DESKTOP
+    # are intentionally *not* set as static home.sessionVariables here (that
+    # would conflict with mango's "mango" value) — river's own
+    # systemd.extraCommands below sets them dynamically for the actual
+    # running session instead.
 
     services.mako.enable = true;
 
-    programs.swaylock = {
-      enable = true;
-      package = pkgs.swaylock-effects;
-      settings = {
-        image = wallpaperPath;
-        scaling = "fill";
-        clock = true;
-        timestr = "%k:%M";
-        datestr = "%Y-%m-%d";
-        show-failed-attempts = true;
-      };
-    };
-
-    services.swayidle = {
-      enable = true;
-      events.before-sleep = "${pkgs.swaylock-effects}/bin/swaylock -f";
-      timeouts = [
-        {
-          timeout = 300;
-          command = "${pkgs.swaylock-effects}/bin/swaylock -f";
-        }
-      ];
-    };
+    # `programs.swaylock` / `services.swayidle` are single global
+    # home-manager options already owned by the mango aspect (den.aspects.mango);
+    # river's own lock/idle keybinds just spawn the shared `swaylock` binary,
+    # which picks up that same generated config regardless of which
+    # compositor is active. Not redeclared here to avoid conflicting
+    # definitions between the two aspects.
 
     # Not a home-manager service module upstream; wire it up manually so it
     # actually inhibits idle (via idle-inhibit-unstable-v1) while media plays,
-    # instead of just sitting installed and unused.
-    systemd.user.services.wayland-pipewire-idle-inhibit = {
+    # instead of just sitting installed and unused. Named uniquely (rather
+    # than reusing mango's unit name) since mango's copy is PartOf
+    # mango-session.target and wouldn't start under a river session.
+    systemd.user.services.river-wayland-pipewire-idle-inhibit = {
       Unit = {
         Description = "Suspend idling while media plays through PipeWire";
         PartOf = ["river-session.target"];
@@ -81,8 +64,6 @@
       };
       Install.WantedBy = ["river-session.target"];
     };
-
-    wayland.systemd.target = "river-session.target";
 
     programs.waybar = {
       enable = true;
