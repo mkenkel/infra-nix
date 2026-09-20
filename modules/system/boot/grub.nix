@@ -1,4 +1,11 @@
-{inputs, ...}: {
+{inputs, ...}: let
+  # See lib/monitors.nix - grub2-theme's customResolution wants a literal
+  # "WIDTHxHEIGHT" and overrides its own "screen" enum when set, so this
+  # skips the lossy 1080p/2k/4k/ultrawide category guess entirely and just
+  # uses the exact monitor's real pixels. Grub itself only ever addresses
+  # one screen (no per-output config), so this reads the first monitor.
+  monitor = builtins.head (import ../../../lib/monitors.nix);
+in {
   den.aspects.boot-grub.nixos = {
     imports = [inputs.grub2-themes.nixosModules.default];
 
@@ -26,7 +33,7 @@
       enable = true;
       theme = "vimix";
       icon = "color";
-      screen = "4k";
+      customResolution = "${toString monitor.width}x${toString monitor.height}";
     };
   };
 }

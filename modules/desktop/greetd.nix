@@ -1,4 +1,10 @@
-{inputs, ...}: {
+{inputs, ...}: let
+  # See lib/monitors.nix - same shared monitor layout mango/river/grub
+  # read, formatted for mango's own config syntax (no spaces around "="
+  # here, matching how this raw text block already reads below).
+  monitor = builtins.head (import ../../lib/monitors.nix);
+  monitorRuleLine = "monitorrule=name:^${monitor.name}$,width:${toString monitor.width},height:${toString monitor.height},refresh:${toString monitor.refresh},scale:${toString monitor.scale},x:${toString monitor.x},y:${toString monitor.y}";
+in {
   den.aspects.greetd.nixos = {
     pkgs,
     config,
@@ -46,7 +52,7 @@
         + ''
 
           # dms-greeter overrides: match the real session's monitor/cursor setup
-          monitorrule=name:^DP-3$,width:3840,height:2160,refresh:143.962997,scale:1.25,x:0,y:0
+          ${monitorRuleLine}
           cursor_size=48
         '';
     };

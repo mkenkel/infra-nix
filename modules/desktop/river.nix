@@ -9,6 +9,11 @@
     ...
   }: let
     wallpaperPath = "${config.home.homeDirectory}/.config/wallpapers/forest.jpg";
+
+    # See lib/monitors.nix - same shared monitor layout mango reads, just
+    # formatted for wlr-randr's own syntax instead of mango's monitorrule.
+    monitors = import ../../lib/monitors.nix;
+    wlrRandrArgs = m: "--output ${m.name} --mode ${toString m.width}x${toString m.height}@${toString m.refresh}Hz --scale ${toString m.scale}";
   in {
     home.packages = with pkgs; [
       cliphist
@@ -189,9 +194,10 @@
         "systemctl --user import-environment WAYLAND_DISPLAY XDG_CURRENT_DESKTOP"
         "${pkgs.rivercarro}/bin/rivercarro -inner-gaps 3 -outer-gaps 3 -no-smart-gaps -per-tag -main-ratio 0.63"
       ];
-      extraConfig = ''
-        riverctl spawn "${pkgs.wlr-randr}/bin/wlr-randr --output DP-3 --mode 3840x2160@143.962997Hz --scale 1.25"
-      '';
+      extraConfig =
+        lib.concatMapStringsSep "\n"
+        (m: ''riverctl spawn "${pkgs.wlr-randr}/bin/wlr-randr ${wlrRandrArgs m}"'')
+        monitors;
       settings = {
         declare-mode = ["locked" "normal" "passthrough"];
         attach-mode = "top";
