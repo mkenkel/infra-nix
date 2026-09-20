@@ -1,5 +1,10 @@
 {inputs, ...}: {
-  den.aspects.greetd.nixos = {...}: {
+  den.aspects.greetd.nixos = {
+    pkgs,
+    config,
+    lib,
+    ...
+  }: {
     imports = [inputs.dank-greeter.nixosModules.dank-greeter];
 
     # dms-greeter only picks up wallpaper/theme from real DankMaterialShell
@@ -12,12 +17,38 @@
       wallpaperFillMode = "PreserveAspectCrop";
     };
 
+    # mango has no cursor-theme config key of its own; it (like the real
+    # session) just reads XCURSOR_THEME/XCURSOR_SIZE from the environment.
+    # greetd execs the greeter directly (no login shell/PAM env sourcing
+    # yet), so the theme has to come from the greetd unit's own env, and the
+    # theme package has to be visible system-wide since the greeter user
+    # doesn't have matt's home-manager profile.
+    environment.systemPackages = [pkgs.posy-cursors];
+    systemd.services.greetd.environment = {
+      XCURSOR_THEME = "Posy_Cursor_125_175";
+      XCURSOR_SIZE = "48";
+    };
+
     services.greetd.settings.default_session.user = "greeter";
 
     programs.dms-greeter = {
       enable = true;
       compositor.name = "mango";
       configFiles = ["/etc/dms-greeter/session.json"];
+
+      # dms-greeter runs mango standalone (outside the home-manager mango
+      # session), so it starts from mango's packaged default config rather
+      # than ~/.config/mango/config.conf. Base off that same default and
+      # layer on the real monitor/refresh-rate rule and cursor size so the
+      # greeter matches the actual session instead of falling back to 60Hz.
+      compositor.customConfig =
+        builtins.readFile "${config.programs.mango.package}/etc/mango/config.conf"
+        + ''
+
+          # dms-greeter overrides: match the real session's monitor/cursor setup
+          monitorrule=name:^DP-3$,width:3840,height:2160,refresh:143.962997,scale:1.25,x:0,y:0
+          cursor_size=48
+        '';
     };
   };
 }

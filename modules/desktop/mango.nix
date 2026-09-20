@@ -160,28 +160,28 @@
           desc = "Swap with previous stack client";
         }
         {
-          mods = "SUPER+ALT";
+          mods = "CTRL+SHIFT+ALT";
           key = "H";
           action = "move_client";
           args = ["left"];
           desc = "Move window left";
         }
         {
-          mods = "SUPER+ALT";
+          mods = "CTRL+SHIFT+ALT";
           key = "J";
           action = "move_client";
           args = ["down"];
           desc = "Move window down";
         }
         {
-          mods = "SUPER+ALT";
+          mods = "CTRL+SHIFT+ALT";
           key = "K";
           action = "move_client";
           args = ["up"];
           desc = "Move window up";
         }
         {
-          mods = "SUPER+ALT";
+          mods = "CTRL+SHIFT+ALT";
           key = "L";
           action = "move_client";
           args = ["right"];
@@ -916,7 +916,7 @@
           "isfloating:1,appid:pavucontrol"
           "isfloating:1,appid:qalculate-qt"
           "tags:8,appid:^(discord|vesktop)$"
-          "tags:9,appid:spotify"
+          "tags:9,appid:^Spotify$"
         ];
 
         bind = map bindString keybinds;
