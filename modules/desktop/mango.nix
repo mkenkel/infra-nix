@@ -109,14 +109,20 @@
           mods = "ALT+SHIFT";
           key = "S";
           action = "spawn";
-          args = ["mango-screenshot" "region"];
+          # mango's "spawn" bind rejoins multi-value args with commas (not
+          # spaces) before wordexp()-ing the result, so multiple args here
+          # would become the single literal word "mango-screenshot,region"
+          # and fail to exec. One list element with the space baked in
+          # (same trick the swaync-client bind above uses) is what actually
+          # wordexp-splits into two argv entries.
+          args = ["mango-screenshot region"];
           desc = "Screenshot region to clipboard (frozen)";
         }
         {
           mods = "ALT+CTRL+SHIFT";
           key = "S";
           action = "spawn";
-          args = ["mango-screenshot" "region-annotate"];
+          args = ["mango-screenshot region-annotate"];
           desc = "Screenshot region, annotate, then copy";
         }
         {
@@ -136,12 +142,6 @@
 
         {
           mods = "SUPER";
-          key = "Tab";
-          action = "overcircle";
-          desc = "Open overview / cycle focus while open";
-        }
-        {
-          mods = "SUPER";
           key = "J";
           action = "focusstack";
           args = ["next"];
@@ -156,6 +156,12 @@
         }
         {
           mods = "ALT";
+          key = "Tab";
+          action = "overcircle";
+          desc = "Open overview / cycle focus while open";
+        }
+        {
+          mods = "SUPER";
           key = "Tab";
           action = "focusstack";
           args = ["next"];
