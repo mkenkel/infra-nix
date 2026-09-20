@@ -42,7 +42,10 @@ in {
 
     boot.loader.refind = {
       enable = true;
-      extraConfig = "include themes/regular-dark/theme.conf\n";
+      maxGenerations = 10;
+      # Theme include disabled for now while diagnosing a boot hang; the
+      # theme files are still installed below so it's a one-line revert.
+      extraConfig = "# include themes/regular-dark/theme.conf\n";
       additionalFiles =
         (flattenDir lib "themes/regular-dark/icons/${refindThemeResolution}" iconsDir)
         // {
