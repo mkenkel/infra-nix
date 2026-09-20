@@ -12,6 +12,7 @@ in {
   den.aspects.boot-refind.nixos = {
     pkgs,
     lib,
+    config,
     ...
   }: let
     themeSrc = inputs.refind-theme-regular;
@@ -43,15 +44,33 @@ in {
     boot.loader.refind = {
       enable = true;
       maxGenerations = 10;
-      # Theme include disabled for now while diagnosing a boot hang; the
-      # theme files are still installed below so it's a one-line revert.
-      extraConfig = "# include themes/regular-dark/theme.conf\n";
+      extraConfig = "include themes/regular-dark/theme.conf\n";
       additionalFiles =
         (flattenDir lib "themes/regular-dark/icons/${refindThemeResolution}" iconsDir)
         // {
           "themes/regular-dark/theme.conf" = themeConf;
           "themes/regular-dark/fonts/source-code-pro-extralight-14.png" = themeSrc + "/fonts/source-code-pro-extralight-14.png";
         };
+    };
+
+    # This board's firmware ignores the NVRAM boot order and always launches
+    # \EFI\BOOT\BOOTX64.EFI regardless of which entry is selected/first, so
+    # mirror rEFInd's whole directory there too (config/kernels/theme, not
+    # just the binary) after every switch and on every boot. installBootLoader
+    # (which regenerates /EFI/refind) always runs before systemd units are
+    # (re)started during switch-to-configuration, so this unit always mirrors
+    # the fresh files, never a stale copy.
+    systemd.services.refind-fallback-mirror = {
+      description = "Mirror rEFInd into EFI/BOOT for firmware that ignores NVRAM boot order";
+      after = ["local-fs.target"];
+      wantedBy = ["multi-user.target"];
+      serviceConfig.Type = "oneshot";
+      script = ''
+        esp="${config.boot.loader.efi.efiSysMountPoint}"
+        rm -rf "$esp/EFI/BOOT"
+        mkdir -p "$esp/EFI/BOOT"
+        cp -a "$esp/EFI/refind/." "$esp/EFI/BOOT/"
+      '';
     };
   };
 }
