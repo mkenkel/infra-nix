@@ -11,6 +11,34 @@
   }: let
     wallpaperPath = "${config.home.homeDirectory}/.config/wallpapers/forest.jpg";
 
+    # Material 3 tonal roles (see mangobar/style.css below for the full
+    # rationale), stored once here so mangobar's CSS and mango's own
+    # window-border/urgent colors can't drift apart. Bare RRGGBB - CSS
+    # wants "#rrggbb", mango's own config wants "rrggbbaa", so each use
+    # site appends what it needs.
+    palette = {
+      surface = "171310";
+      surfaceContainer = "221c16";
+      surfaceContainerHigh = "2e261d";
+      outline = "3a2f24";
+      onSurface = "f5e6d3";
+      onSurfaceVariant = "a8927c";
+
+      primary = "f2994a";
+      onPrimary = "1c1410";
+      primaryContainer = "4a3420";
+      onPrimaryContainer = "ffd9a8";
+
+      secondary = "6a994e";
+      onSecondary = "12190d";
+
+      tertiary = "f4c95d";
+      onTertiary = "241a03";
+
+      error = "d9534f";
+      onError = "2a0a08";
+    };
+
     # Declarative keybind list: single source of truth for both the mango
     # `bind` config and the fuzzel keybindings cheatsheet below.
     keybinds =
@@ -792,9 +820,13 @@
         height = 36;
         buffer-scale = 1;
 
-        modules-left = ["workspaces" "layout" "window"];
-        modules-center = ["clock#date" "clock#time"];
-        modules-right = ["pulseaudio" "tray"];
+        # Three groups: workspace/layout cluster on the left, the focused
+        # window title alone in the center, clock + volume/tray clusters
+        # on the right (see style.css for the visual spacing that
+        # actually separates these groups from each other).
+        modules-left = ["workspaces" "layout"];
+        modules-center = ["window"];
+        modules-right = ["clock#date" "clock#time" "pulseaudio" "tray"];
 
         workspaces = {
           hide-empty = false;
@@ -836,26 +868,26 @@
        * 3-step surface tonal ladder (surface < surface-container <
        * surface-container-high), and color is reserved for
        * state/actionable modules rather than sprinkled everywhere. */
-      @define-color surface #171310;
-      @define-color surface-container #221c16;
-      @define-color surface-container-high #2e261d;
-      @define-color outline #3a2f24;
-      @define-color on-surface #f5e6d3;
-      @define-color on-surface-variant #a8927c;
+      @define-color surface #${palette.surface};
+      @define-color surface-container #${palette.surfaceContainer};
+      @define-color surface-container-high #${palette.surfaceContainerHigh};
+      @define-color outline #${palette.outline};
+      @define-color on-surface #${palette.onSurface};
+      @define-color on-surface-variant #${palette.onSurfaceVariant};
 
-      @define-color primary #f2994a;
-      @define-color on-primary #1c1410;
-      @define-color primary-container #4a3420;
-      @define-color on-primary-container #ffd9a8;
+      @define-color primary #${palette.primary};
+      @define-color on-primary #${palette.onPrimary};
+      @define-color primary-container #${palette.primaryContainer};
+      @define-color on-primary-container #${palette.onPrimaryContainer};
 
-      @define-color secondary #6a994e;
-      @define-color on-secondary #12190d;
+      @define-color secondary #${palette.secondary};
+      @define-color on-secondary #${palette.onSecondary};
 
-      @define-color tertiary #f4c95d;
-      @define-color on-tertiary #241a03;
+      @define-color tertiary #${palette.tertiary};
+      @define-color on-tertiary #${palette.onTertiary};
 
-      @define-color error #d9534f;
-      @define-color on-error #2a0a08;
+      @define-color error #${palette.error};
+      @define-color on-error #${palette.onError};
 
       * {
         # mangobar's CSS parser keeps only the first font-family value and
@@ -885,10 +917,16 @@
 
       /* Tag row reads as an M3 segmented button (single-select, one
        * highlighted segment) rather than a row of chips, so it gets
-       * "corner-full" - fully rounded, per the segmented-button spec. */
+       * "corner-full" - fully rounded, per the segmented-button spec.
+       * mangobar has no way to draw one shared container around a
+       * module's sub-items (no first/last-child selector either, so a
+       * seamless fused strip isn't achievable without scalloping at the
+       * touch points) - tightening the gap between segments to 1px is
+       * the closest approximation to "one grouped cluster" available. */
       #tags {
         padding: 0px 10px;
         min-width: 26px;
+        margin: 4px 1px;
         border-radius: 9999px;
       }
 
@@ -915,45 +953,58 @@
 
       /* Distinct from the active-tag accent so it doesn't read as "tag 1
        * is active" when overview mode is toggled instead. Same pill shape
-       * as #tags since it sits directly in that cluster. */
+       * and tight margin as #tags since it sits directly in that cluster. */
       #overview {
         background-color: @tertiary;
         color: @on-tertiary;
+        margin: 4px 1px;
         border-radius: 9999px;
       }
 
+      /* Extra left margin separates the "layout" group from the
+       * workspace cluster to its left - tight within a group, looser
+       * between groups. */
       #layout {
         background-color: @secondary;
         color: @on-secondary;
         min-width: 28px;
+        margin-left: 12px;
         border-radius: 9999px;
       }
 
+      /* Sole center module - the focused window title. */
       #title {
         background-color: @surface-container;
         color: @on-surface-variant;
+        padding: 0px 16px;
       }
 
       /* Interactive (click/scroll to change volume): gets a container
-       * accent instead of a neutral tone. */
+       * accent instead of a neutral tone. Extra left margin opens the gap
+       * between this group (volume+tray) and the clock cluster before it. */
       #volume {
         background-color: @primary-container;
         color: @on-primary-container;
+        margin-left: 12px;
       }
 
       #tray {
         background-color: @surface-container;
+        margin-left: 1px;
       }
 
       /* Passive info, not actionable, so neutral tones rather than the
-       * old solid-yellow/green fill. */
+       * old solid-yellow/green fill. Tight margin between date and time
+       * so the pair reads as one "clock" group. */
       #clock {
         background-color: @surface-container-high;
         color: @on-surface;
+        margin-left: 1px;
       }
       #clock.date {
         background-color: @surface-container;
         color: @on-surface-variant;
+        margin-right: 1px;
       }
 
       /* Per the M3 menu-component spec: surface-container fill,
@@ -1124,6 +1175,17 @@
         ];
         repeat_rate = 40;
         repeat_delay = 200;
+
+        # Window chrome, themed from the same M3 palette as mangobar:
+        # focused border = primary accent, unfocused = the neutral outline
+        # tone, urgent = error. Radius matches mangobar's "corner-small"
+        # (8px) chips for a consistent shape language between bar and
+        # windows.
+        borderpx = 2;
+        border_radius = 8;
+        bordercolor = "${palette.outline}ff";
+        focuscolor = "${palette.primary}ff";
+        urgentcolor = "${palette.error}ff";
 
         # Notification/OSD popups (mako) are layer-shell surfaces, so they
         # fade in/out via layer_animations rather than the window animation
