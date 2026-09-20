@@ -480,6 +480,28 @@
         }
       ];
 
+    # Scroll-wheel binds: mango dispatches these via a separate "axisbind"
+    # directive (mods,direction,action,args), not "bind" - same underlying
+    # parser/quirks though (same comma-vs-space arg gotcha as "spawn"
+    # above), so they reuse bindString/comboDisplay and just get written
+    # to a different settings key below.
+    scrollBinds = [
+      {
+        mods = "CTRL+SHIFT";
+        key = "Up";
+        action = "spawn";
+        args = ["volume-osd up sink"];
+        desc = "Volume up (scroll)";
+      }
+      {
+        mods = "CTRL+SHIFT";
+        key = "Down";
+        action = "spawn";
+        args = ["volume-osd down sink"];
+        desc = "Volume down (scroll)";
+      }
+    ];
+
     bindString = b: lib.concatStringsSep "," ([b.mods b.key b.action] ++ (b.args or []));
 
     # Friendlier key names for the cheatsheet display only.
@@ -503,7 +525,7 @@
     keybindsCheatsheet =
       lib.concatMapStringsSep "\n"
       (b: "${lib.fixedWidthString 24 " " (comboDisplay b)} ${b.desc}")
-      keybinds;
+      (keybinds ++ scrollBinds);
 
     keybindsMenu = pkgs.writeShellScriptBin "mango-keybinds-menu" ''
       ${pkgs.fuzzel}/bin/fuzzel --dmenu --prompt "Keybinds> " --lines 20 --width 90 \
@@ -756,6 +778,9 @@
 
         # Volume/mic OSD: compact pill anchored bottom-center with a progress
         # bar driven by the "value" hint set in the volume-osd script.
+        # Colors come from the same M3 palette as the bar/window chrome
+        # (see lib/palette-m3.nix) instead of one-off hex that happened to
+        # already be close to it - single source of truth from here on.
         "app-name=Volume" = {
           anchor = "bottom-center";
           outer-margin = 60;
@@ -764,10 +789,11 @@
           history = 0;
           layer = "overlay";
           default-timeout = 1200;
-          border-color = "#f2994a";
-          background-color = "#1c1410E6";
-          progress-color = "over #f2994a";
+          border-color = "#${palette.primary}";
+          background-color = "#${palette.surface}E6";
+          progress-color = "over #${palette.primary}";
           text-alignment = "center";
+          font = "Maple Mono NF 12";
           format = "<b>%s</b>";
         };
         "app-name=Microphone" = {
@@ -778,10 +804,11 @@
           history = 0;
           layer = "overlay";
           default-timeout = 1200;
-          border-color = "#6a994e";
-          background-color = "#1c1410E6";
-          progress-color = "over #6a994e";
+          border-color = "#${palette.secondary}";
+          background-color = "#${palette.surface}E6";
+          progress-color = "over #${palette.secondary}";
           text-alignment = "center";
+          font = "Maple Mono NF 12";
           format = "<b>%s</b>";
         };
       };
@@ -884,9 +911,13 @@
            not per-selector, so they can only be set once here. */
         font-family: "Maple Mono NF";
         /* M3's label-medium type-scale token (the one the spec assigns
-           to dense chip/status-bar text): 12px, medium weight. */
-        font-size: 12px;
-        font-weight: Medium;
+           to dense chip/status-bar text) is 12px/medium, but font-weight
+           is global across the whole bar - not per-selector - so this is
+           the only lever available to make anything (e.g. the clock)
+           read as bolder at a glance. Bumped past the spec's own
+           "medium" a notch to SemiBold for that reason. */
+        font-size: 14px;
+        font-weight: Bold;
         /* Deliberately no color/background-color here, even though every
            module below needs one - see the same "state-less selectors
            always match" hover-resolution quirk explained on #tags below.
@@ -1201,6 +1232,16 @@
         repeat_rate = 40;
         repeat_delay = 200;
 
+        # mango throttles axisbind (scroll-wheel bind) actions to at most
+        # one per this many ms in the same direction (pointer.c) - fast
+        # scrolling packs ticks closer together than the default 100ms,
+        # so most get swallowed down to ~1 trigger, while slow scrolling
+        # naturally spaces ticks further apart than that and so fires
+        # every one. That's why fast/slow scroll used to feel wildly
+        # different (throttled vs. not) for the same physical motion.
+        # 0 makes every tick fire independently regardless of speed.
+        axis_bind_apply_timeout = 0;
+
         # Window chrome, themed from the same M3 palette as mangobar:
         # focused border = primary accent, unfocused = the neutral outline
         # tone, urgent = error. Radius matches mangobar's "corner-small"
@@ -1240,6 +1281,7 @@
         ];
 
         bind = map bindString keybinds;
+        axisbind = map bindString scrollBinds;
       };
     };
   };
