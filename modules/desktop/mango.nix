@@ -15,6 +15,13 @@
     # (also used by fuzzel, so the whole desktop stays in sync).
     palette = import ../../lib/palette-m3.nix;
 
+    # See lib/monitors.nix for the shared monitor layout - raw values only,
+    # formatted into mango's own monitorrule string syntax here since that
+    # format is specific to mango (a different WM's aspect would format the
+    # same list differently).
+    monitors = import ../../lib/monitors.nix;
+    monitorRuleString = m: "name:^${m.name}$,width:${toString m.width},height:${toString m.height},refresh:${toString m.refresh},scale:${toString m.scale},x:${toString m.x},y:${toString m.y}";
+
     # Declarative keybind list: single source of truth for both the mango
     # `bind` config and the fuzzel keybindings cheatsheet below.
     keybinds =
@@ -1226,9 +1233,7 @@
         fi
       '';
       settings = {
-        monitorrule = [
-          "name:^DP-3$,width:3840,height:2160,refresh:143.962997,scale:1.25,x:0,y:0"
-        ];
+        monitorrule = map monitorRuleString monitors;
         repeat_rate = 40;
         repeat_delay = 200;
 
