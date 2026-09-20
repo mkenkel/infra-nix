@@ -29,6 +29,8 @@
       den.aspects.gpg-agent
       den.aspects.programming
       den.aspects.spotify
+      den.aspects.obsidian
+      den.aspects.via
     ]; # (10)
     nixos = {pkgs, ...}: {
       users.users.matt.packages = with pkgs; [
@@ -63,7 +65,6 @@
           lsof
           neovim
           nwg-look
-          # obsidian
           playerctl
           prismlauncher
           qalculate-qt
@@ -72,9 +73,7 @@
           slurp
           showmethekey
           sops
-          # spotify
           tree
-          # via
           virt-manager
           virt-viewer
           wev

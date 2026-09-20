@@ -890,23 +890,42 @@
       @define-color on-error #${palette.onError};
 
       * {
-        # mangobar's CSS parser keeps only the first font-family value and
-        # drops any fallback list, so this must be a font that itself
-        # covers every glyph used in this config (Nerd Font icons included).
-        # font-family/size/weight are also global, not per-selector, so
-        # they can only be set once here.
+        /* mangobar's CSS parser only understands C-style block comments,
+           never '#' line comments (that's a Nix habit, not a mangobar
+           one - its parser, style.c, never checks for a hash at all). A
+           hash inside a rule body just gets read as part of the property
+           name instead, which silently drops whatever declaration
+           follows it. Every comment inside this string literal has to
+           stay block-style for that reason - hash comments here
+           previously ate font-family, font-size, and this very
+           border-radius default with no error at all, which made it a
+           very quiet bug.
+
+           mangobar's CSS parser keeps only the first font-family value
+           and drops any fallback list, so this must be a font that
+           itself covers every glyph used in this config (Nerd Font
+           icons included). font-family/size/weight are also global,
+           not per-selector, so they can only be set once here. */
         font-family: "Maple Mono NF";
-        # M3's label-medium type-scale token (the one the spec assigns to
-        # dense chip/status-bar text): 12px, medium weight.
+        /* M3's label-medium type-scale token (the one the spec assigns
+           to dense chip/status-bar text): 12px, medium weight. */
         font-size: 12px;
         font-weight: Medium;
-        color: @on-surface;
-        background-color: @surface-container;
+        /* Deliberately no color/background-color here, even though every
+           module below needs one - see the same "state-less selectors
+           always match" hover-resolution quirk explained on #tags below.
+           If this set a background, hovering ANY tag would repaint it
+           with THIS color (not its actual active/occupied/urgent/empty
+           color), because mangobar's hover-state lookup also matches
+           state-less rules like this one. Every module below sets its
+           own explicit color/background instead, so nothing is actually
+           relying on a fallback here - this only ever existed as a
+           "just in case" default that turned out to be actively harmful. */
         padding: 0px 12px;
         margin: 4px 3px;
-        # M3 shape-scale "corner-small" (8px) - what filter/assist chips
-        # use, per the spec. Grouped pill-shaped controls (tags/overview/
-        # layout below) override this with "corner-full" instead.
+        /* M3 shape-scale "corner-small" (8px) - what filter/assist chips
+           use, per the spec. Grouped pill-shaped controls (tags/overview/
+           layout below) override this with "corner-full" instead. */
         border-radius: 8px;
       }
 
@@ -922,10 +941,25 @@
        * module's sub-items (no first/last-child selector either, so a
        * seamless fused strip isn't achievable without scalloping at the
        * touch points) - tightening the gap between segments to 1px is
-       * the closest approximation to "one grouped cluster" available. */
+       * the closest approximation to "one grouped cluster" available.
+       *
+       * Deliberately no min-width here. mangobar.c unconditionally
+       * overwrites every tag's min-width at startup to (bar height +
+       * its own margins), to keep the buttons square regardless of what
+       * CSS says - so a min-width here is dead for the normal render
+       * path anyway. Its only live effect was a hover bug: style_resolve()
+       * still matches this state-less "#tags" block when resolving the
+       * "hover" state (state-less selectors always match, regardless of
+       * which state was asked for), so hovering ANY tag re-applied
+       * whatever min-width was written here, overwriting the correct
+       * startup-computed value and visibly shrinking just the hovered
+       * tag - which pushed every tag after it left, i.e. exactly the
+       * "numbers jump around on hover" bug. Confirmed by bisecting
+       * against a manually-run `mangobar -s <scratch.css>` instance: the
+       * position jump measured 0 px once this line was removed, across
+       * every tag, vs. a consistent ~1000-1600px AE diff before. */
       #tags {
         padding: 0px 10px;
-        min-width: 26px;
         margin: 4px 1px;
         border-radius: 9999px;
       }
