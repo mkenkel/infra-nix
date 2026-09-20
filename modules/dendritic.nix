@@ -16,6 +16,11 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    dank-greeter = {
+      url = "github:AvengeMedia/dank-greeter";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     mango = {
       url = "github:mangowm/mango";
       inputs.nixpkgs.follows = "nixpkgs";

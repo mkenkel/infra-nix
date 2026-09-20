@@ -636,7 +636,7 @@
           on-click-right = "toggle";
           # Indices are 0-based tag bits: 7 = tag 8 (windowrule sends
           # discord/vesktop there), 8 = tag 9 (spotify), 9 = tag 0/F10.
-          tag-names = ["1" "2" "3" "4" "5" "6" "7" "󰙯" "󰡰" "0"];
+          tag-names = ["1" "2" "3" "4" "5" "6" "7" "󰙯" "󰓇" "0"];
         };
 
         layout.format = "{}";
@@ -664,7 +664,10 @@
 
     xdg.configFile."mangobar/style.css".text = ''
       * {
-        font-family: "Maple Mono NF", "Symbols Nerd Font";
+        # mangobar's CSS parser keeps only the first font-family value and
+        # drops any fallback list, so this must be a font that itself
+        # covers every glyph used in this config (Nerd Font icons included).
+        font-family: "Maple Mono NF";
         color: #f5e6d3;
         background-color: #1c1410;
         padding: 0px 10px;

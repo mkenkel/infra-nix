@@ -1,5 +1,42 @@
 {
   "nodes": {
+    "dank-greeter": {
+      "inputs": {
+        "dank-qml-common": "dank-qml-common",
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1789701749,
+        "narHash": "sha256-vVJUgNEUa+trNXZFK7DGmuV9HMz4GMiA+f+de6k51hw=",
+        "owner": "AvengeMedia",
+        "repo": "dank-greeter",
+        "rev": "c792f1e13287fed01b1bf1a80654553019f3e0cb",
+        "type": "github"
+      },
+      "original": {
+        "owner": "AvengeMedia",
+        "repo": "dank-greeter",
+        "type": "github"
+      }
+    },
+    "dank-qml-common": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1789701545,
+        "narHash": "sha256-aNZwXDlF1NMIrMtPL3ZtDg5Q8LZY62DjnpPRoe2453g=",
+        "owner": "AvengeMedia",
+        "repo": "dank-qml-common",
+        "rev": "55d3897192f47692b7961812d94ad18004fa0ad8",
+        "type": "github"
+      },
+      "original": {
+        "owner": "AvengeMedia",
+        "repo": "dank-qml-common",
+        "type": "github"
+      }
+    },
     "den": {
       "locked": {
         "lastModified": 1789780529,
@@ -246,6 +283,7 @@
     },
     "root": {
       "inputs": {
+        "dank-greeter": "dank-greeter",
         "den": "den",
         "flake-file": "flake-file",
         "flake-parts": "flake-parts",
