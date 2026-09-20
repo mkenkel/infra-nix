@@ -363,6 +363,13 @@
           action = "switch_layout";
           desc = "Cycle layout";
         }
+        {
+          mods = "ALT+SHIFT";
+          key = "L";
+          action = "spawn";
+          args = ["mango-layout-picker"];
+          desc = "Pick + preview any layout";
+        }
 
         {
           mods = "NONE";
@@ -482,6 +489,85 @@
         | ${pkgs.wl-clipboard}/bin/wl-copy
     '';
 
+    # Every layout mango's arrange.c actually registers (src/layout/arrange.c);
+    # the upstream docs page lists a "spiral" that doesn't exist - it's
+    # called dwindle in the source.
+    layouts = [
+      {
+        name = "tile";
+        desc = "Master-stack, one resizable split ratio";
+      }
+      {
+        name = "scroller";
+        desc = "PaperWM-style horizontal scrolling strip";
+      }
+      {
+        name = "grid";
+        desc = "Even grid of windows";
+      }
+      {
+        name = "monocle";
+        desc = "One window fullscreen, rest hidden";
+      }
+      {
+        name = "deck";
+        desc = "Stack with the focused window on top";
+      }
+      {
+        name = "center_tile";
+        desc = "Master-stack with a centered master";
+      }
+      {
+        name = "right_tile";
+        desc = "Master-stack with master on the right";
+      }
+      {
+        name = "vertical_scroller";
+        desc = "Scroller, scrolling vertically";
+      }
+      {
+        name = "vertical_tile";
+        desc = "Tile, stacked vertically";
+      }
+      {
+        name = "vertical_grid";
+        desc = "Grid, stacked vertically";
+      }
+      {
+        name = "vertical_deck";
+        desc = "Deck, stacked vertically";
+      }
+      {
+        name = "dwindle";
+        desc = "Recursive binary-tree splits (spiral effect)";
+      }
+      {
+        name = "fair";
+        desc = "Equal space for every window";
+      }
+      {
+        name = "vertical_fair";
+        desc = "Fair, stacked vertically";
+      }
+    ];
+
+    layoutsCheatsheet =
+      lib.concatMapStringsSep "\n"
+      (l: "${lib.fixedWidthString 20 " " l.name} ${l.desc}")
+      layouts;
+
+    # Lets you fuzzel-pick any of the 14 layouts above and immediately see
+    # it applied, instead of memorizing/binding a key per layout.
+    layoutPicker = pkgs.writeShellScriptBin "mango-layout-picker" ''
+      set -euo pipefail
+      choice=$(${pkgs.fuzzel}/bin/fuzzel --dmenu --prompt "Layout> " --lines 14 --width 70 \
+        < ${pkgs.writeText "mango-layouts.txt" layoutsCheatsheet})
+      [ -n "$choice" ] || exit 0
+      layout=$(printf '%s' "$choice" | ${pkgs.gawk}/bin/awk '{print $1}')
+      mmsg dispatch setlayout,"$layout"
+      notify-send -a Mango -i view-grid "Layout" "$layout"
+    '';
+
     # Adjusts/mutes the default sink or source, then pops a mako progress-bar
     # OSD reflecting the resulting level. The x-canonical-private-synchronous
     # hint makes mako replace the previous "volume" toast instead of stacking.
@@ -529,6 +615,7 @@
       fuzzel
       glib
       keybindsMenu
+      layoutPicker
       libnotify
       volumeOsd
       lswt
