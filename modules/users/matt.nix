@@ -19,6 +19,7 @@
       den.aspects.fonts
       den.aspects.kitty
       den.aspects.mango
+      den.aspects.river
       den.aspects.gtk
       den.aspects.git
       den.aspects.gpg

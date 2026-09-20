@@ -47,6 +47,16 @@
           desc = "Reload mango config";
         }
         {
+          mods = "SUPER+SHIFT";
+          key = "R";
+          action = "spawn_shell";
+          # mangobar has no reload signal/IPC of its own (reads style.css
+          # and its config once at startup), so picking up bar changes
+          # means restarting the service, not just mango's reload_config.
+          args = [''mmsg dispatch reload_config && systemctl --user restart mangobar.service && notify-send -a Mango -i view-refresh "Mango" "Config + bar reloaded"''];
+          desc = "Reload mango config + restart mangobar";
+        }
+        {
           mods = "CTRL+ALT+SHIFT";
           key = "E";
           action = "quit";
@@ -99,7 +109,7 @@
           mods = "ALT+SHIFT";
           key = "S";
           action = "spawn_shell";
-          args = [''${pkgs.grim}/bin/grim -g \"$(${pkgs.slurp}/bin/slurp)\" - | ${pkgs.wl-clipboard}/bin/wl-copy''];
+          args = [''${pkgs.grim}/bin/grim -g "$(${pkgs.slurp}/bin/slurp)" - | ${pkgs.wl-clipboard}/bin/wl-copy''];
           desc = "Screenshot region to clipboard";
         }
         {
@@ -697,13 +707,18 @@
         # font-family/size/weight are also global, not per-selector, so
         # they can only be set once here.
         font-family: "Maple Mono NF";
+        # M3's label-medium type-scale token (the one the spec assigns to
+        # dense chip/status-bar text): 12px, medium weight.
+        font-size: 12px;
+        font-weight: Medium;
         color: @on-surface;
         background-color: @surface-container;
         padding: 0px 12px;
         margin: 4px 3px;
-        # ~half the ~28px chip height mangobar leaves inside the bar
-        # margins below, for a full Material pill shape.
-        border-radius: 14px;
+        # M3 shape-scale "corner-small" (8px) - what filter/assist chips
+        # use, per the spec. Grouped pill-shaped controls (tags/overview/
+        # layout below) override this with "corner-full" instead.
+        border-radius: 8px;
       }
 
       #bar {
@@ -711,9 +726,13 @@
         margin: 6px 10px;
       }
 
+      /* Tag row reads as an M3 segmented button (single-select, one
+       * highlighted segment) rather than a row of chips, so it gets
+       * "corner-full" - fully rounded, per the segmented-button spec. */
       #tags {
         padding: 0px 10px;
         min-width: 26px;
+        border-radius: 9999px;
       }
 
       /* Selected tag: filled with primary, the one accent that always
@@ -738,16 +757,19 @@
       }
 
       /* Distinct from the active-tag accent so it doesn't read as "tag 1
-       * is active" when overview mode is toggled instead. */
+       * is active" when overview mode is toggled instead. Same pill shape
+       * as #tags since it sits directly in that cluster. */
       #overview {
         background-color: @tertiary;
         color: @on-tertiary;
+        border-radius: 9999px;
       }
 
       #layout {
         background-color: @secondary;
         color: @on-secondary;
         min-width: 28px;
+        border-radius: 9999px;
       }
 
       #title {
@@ -777,10 +799,13 @@
         color: @on-surface-variant;
       }
 
+      /* Per the M3 menu-component spec: surface-container fill,
+       * "corner-extra-small" (4px) shape - menus stay closer to square
+       * than the chips/pills around them. */
       menu {
-        background-color: @surface-container-high;
+        background-color: @surface-container;
         border-color: @outline;
-        border-radius: 12px;
+        border-radius: 4px;
       }
       menuitem {
         color: @on-surface;

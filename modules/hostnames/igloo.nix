@@ -13,6 +13,7 @@
       den.aspects.polkit
       den.aspects.realtime-audio
       den.aspects.mango
+      den.aspects.river
       den.aspects.greetd
       den.aspects.graphics
       den.aspects.steam
