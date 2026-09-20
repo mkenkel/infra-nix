@@ -14,9 +14,6 @@
       den.aspects.realtime-audio
       den.aspects.mango
       den.aspects.river
-      den.aspects.fuzzel
-      den.aspects.gtk
-      den.aspects.via
       den.aspects.greetd
       den.aspects.graphics
       den.aspects.steam

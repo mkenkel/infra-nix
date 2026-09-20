@@ -45,7 +45,7 @@
 
       environment.systemPackages = with pkgs; [
         chafa
-        nixfmt-rfc-style
+        nixfmt
         alejandra
       ];
 
