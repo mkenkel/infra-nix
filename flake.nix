@@ -8,6 +8,10 @@
       url = "github:AvengeMedia/dank-greeter";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    darwin = {
+      url = "github:nix-darwin/nix-darwin/nix-darwin-26.05";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     den.url = "github:denful/den";
     flake-file.url = "github:vic/flake-file";
     flake-parts = {
@@ -22,6 +26,18 @@
       url = "github:nix-community/home-manager/release-26.05";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    homebrew-bundle = {
+      url = "github:homebrew/homebrew-bundle";
+      flake = false;
+    };
+    homebrew-cask = {
+      url = "github:homebrew/homebrew-cask";
+      flake = false;
+    };
+    homebrew-core = {
+      url = "github:homebrew/homebrew-core";
+      flake = false;
+    };
     import-tree.url = "github:denful/import-tree";
     mango = {
       url = "github:mangowm/mango";
@@ -31,6 +47,7 @@
       url = "github:mangowm/mangobar";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    nix-homebrew.url = "github:zhaofengli-wip/nix-homebrew";
     nixpkgs.url = "github:nixos/nixpkgs/release-26.05";
     nur = {
       url = "github:nix-community/NUR";

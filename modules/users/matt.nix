@@ -13,14 +13,10 @@
       den.aspects.tmux
       den.aspects.bat
       den.aspects.claude
-      den.aspects.fuzzel
       den.aspects.firefox
       den.aspects.librewolf
       den.aspects.fonts
       den.aspects.kitty
-      den.aspects.mango
-      den.aspects.river
-      den.aspects.gtk
       den.aspects.git
       den.aspects.gpg
       den.aspects.neovim
@@ -30,7 +26,6 @@
       den.aspects.programming
       den.aspects.spotify
       den.aspects.obsidian
-      den.aspects.via
     ]; # (10)
     nixos = {pkgs, ...}: {
       users.users.matt.packages = with pkgs; [
