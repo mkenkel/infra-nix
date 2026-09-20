@@ -2,10 +2,10 @@
   gtkHomeManager = {pkgs, ...}: {
     gtk = {
       enable = true;
-      colorScheme = "light";
+      colorScheme = "dark";
       theme = {
-        name = "Breeze-light";
-        package = pkgs.kdePackages.breeze;
+        name = "Breeze-Dark";
+        package = pkgs.kdePackages.breeze-gtk;
       };
       cursorTheme = {
         name = "Posy_Cursor_125_175";
@@ -15,7 +15,7 @@
       gtk3 = {
         extraConfig = {
           Settings = ''
-            gtk-application-prefer-dark-theme=0
+            gtk-application-prefer-dark-theme=1
             gtk-dialogs-use-header=false
           '';
           extraCss = ''
@@ -34,7 +34,7 @@
         theme = null;
         extraConfig = {
           Settings = ''
-            gtk-application-prefer-dark-theme=0
+            gtk-application-prefer-dark-theme=1
             gtk-dialogs-use-header=false
           '';
         };

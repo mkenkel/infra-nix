@@ -92,7 +92,7 @@
           mods = "ALT+SHIFT";
           key = "P";
           action = "spawn";
-          args = ["${pavucontrolDark}/bin/pavucontrol"];
+          args = ["pavucontrol"];
           desc = "Open volume mixer";
         }
         {
@@ -509,18 +509,6 @@
           "$label $percent%"
       fi
     '';
-
-    # Rest of the desktop stays light (gtk.nix), but pavucontrol reads better
-    # dark; force it via GTK_THEME rather than flipping the global scheme.
-    pavucontrolDark = pkgs.symlinkJoin {
-      name = "pavucontrol-dark";
-      paths = [pkgs.pavucontrol];
-      nativeBuildInputs = [pkgs.makeWrapper];
-      postBuild = ''
-        wrapProgram $out/bin/pavucontrol \
-          --set GTK_THEME Breeze-Dark
-      '';
-    };
   in {
     imports = [
       inputs.mango.hmModules.mango
@@ -533,10 +521,9 @@
       keybindsMenu
       libnotify
       volumeOsd
-      kdePackages.breeze-gtk
       lswt
       mako
-      pavucontrolDark
+      pavucontrol
       playerctl
       swaybg
       swaynotificationcenter
@@ -657,7 +644,7 @@
           format = "{icon} {volume}%";
           format-muted = "󰖁 {volume}%";
           icons = ["󰕿" "󰖀" "󰕾"];
-          on-click = "${pavucontrolDark}/bin/pavucontrol";
+          on-click = "${pkgs.pavucontrol}/bin/pavucontrol";
           on-scroll-up = "wpctl set-volume @DEFAULT_SINK@ 5%+";
           on-scroll-down = "wpctl set-volume @DEFAULT_SINK@ 5%-";
         };
