@@ -30,5 +30,10 @@
       url = "github:nix-community/NUR";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    refind-theme-regular = {
+      url = "github:bobafetthotmail/refind-theme-regular";
+      flake = false;
+    };
   };
 }

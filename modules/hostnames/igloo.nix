@@ -3,7 +3,7 @@
     # (6)
     includes = [
       den.batteries.hostname
-      den.aspects.boot-systemd
+      den.aspects.boot-refind
       den.aspects.virt-docker
       den.aspects.virt-podman
       den.aspects.locale-us-eastern

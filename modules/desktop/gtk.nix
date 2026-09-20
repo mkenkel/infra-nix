@@ -55,6 +55,16 @@
         size = 12;
       };
     };
+
+    # gtk.cursorTheme only wires the theme into dconf/GTK settings; Wayland
+    # compositors like mango pick up the cursor via XCURSOR_THEME/XCURSOR_SIZE,
+    # which only home.pointerCursor sets.
+    home.pointerCursor = {
+      name = "Posy_Cursor_125_175";
+      package = pkgs.posy-cursors;
+      size = 48;
+      gtk.enable = true;
+    };
   };
 in {
   den.aspects.gtk = {

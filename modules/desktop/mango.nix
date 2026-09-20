@@ -78,14 +78,14 @@
           mods = "ALT";
           key = "Escape";
           action = "spawn";
-          args = ["${pkgs.swaylock-effects}/bin/swaylock"];
+          args = ["swaylock"];
           desc = "Lock screen";
         }
         {
           mods = "SUPER";
           key = "L";
           action = "spawn";
-          args = ["${pkgs.swaylock-effects}/bin/swaylock"];
+          args = ["swaylock"];
           desc = "Lock screen";
         }
         {
@@ -526,7 +526,6 @@
       pavucontrol
       playerctl
       swaybg
-      swaylock-effects
       swaynotificationcenter
       vicinae
       wayland-pipewire-idle-inhibit
@@ -782,6 +781,56 @@
       Install.WantedBy = ["mango-session.target"];
     };
 
+    programs.swaylock = {
+      enable = true;
+      package = pkgs.swaylock-effects;
+      settings = {
+        image = wallpaperPath;
+        scaling = "fill";
+
+        effect-blur = "7x5";
+        effect-vignette = "0.5:0.5";
+        fade-in = 0.2;
+
+        clock = true;
+        timestr = "%I:%M %p";
+        datestr = "%a %b %d";
+        font = "JetBrainsMono";
+        font-size = 24;
+        indicator = true;
+        indicator-radius = 120;
+        indicator-thickness = 10;
+
+        color = "1c1410";
+        inside-color = "1c1410CC";
+        ring-color = "f2994a";
+        line-color = "00000000";
+        separator-color = "00000000";
+        text-color = "f5e6d3";
+        text-caps-lock-color = "f4c95d";
+
+        ring-ver-color = "f4c95d";
+        inside-ver-color = "1c1410CC";
+        text-ver-color = "f5e6d3";
+
+        ring-wrong-color = "BF616A";
+        inside-wrong-color = "1c1410CC";
+        text-wrong-color = "f5e6d3";
+
+        ring-clear-color = "6a994e";
+        inside-clear-color = "1c1410CC";
+        text-clear-color = "f5e6d3";
+
+        key-hl-color = "f2994a";
+        bs-hl-color = "BF616A";
+        caps-lock-key-hl-color = "f4c95d";
+        caps-lock-bs-hl-color = "BF616A";
+
+        layout-bg-color = "1c1410CC";
+        layout-text-color = "f5e6d3";
+      };
+    };
+
     services.wlsunset = {
       enable = true;
       latitude = 39.1;
@@ -797,7 +846,7 @@
       timeouts = [
         {
           timeout = 30 * 60;
-          command = "${pkgs.swaylock-effects}/bin/swaylock -f";
+          command = "swaylock -f";
         }
         {
           timeout = 2 * 60 * 60;
@@ -807,7 +856,7 @@
       events = {
         # Lock before any suspend, not just ones swayidle itself triggers
         # (e.g. lid close, power button, manual `systemctl suspend`).
-        before-sleep = "${pkgs.swaylock-effects}/bin/swaylock -f";
+        before-sleep = "swaylock -f";
       };
     };
 
@@ -870,6 +919,10 @@ in {
     nixos = {
       imports = [inputs.mango.nixosModules.mango];
       programs.mango.enable = true;
+      # swaylock needs its own PAM service to authenticate against the user's
+      # password; without this it rejects every attempt since it can't read
+      # /etc/shadow via pam_unix.
+      security.pam.services.swaylock = {};
     };
   };
 }
