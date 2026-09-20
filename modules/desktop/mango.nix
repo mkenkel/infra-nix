@@ -11,33 +11,9 @@
   }: let
     wallpaperPath = "${config.home.homeDirectory}/.config/wallpapers/forest.jpg";
 
-    # Material 3 tonal roles (see mangobar/style.css below for the full
-    # rationale), stored once here so mangobar's CSS and mango's own
-    # window-border/urgent colors can't drift apart. Bare RRGGBB - CSS
-    # wants "#rrggbb", mango's own config wants "rrggbbaa", so each use
-    # site appends what it needs.
-    palette = {
-      surface = "171310";
-      surfaceContainer = "221c16";
-      surfaceContainerHigh = "2e261d";
-      outline = "3a2f24";
-      onSurface = "f5e6d3";
-      onSurfaceVariant = "a8927c";
-
-      primary = "f2994a";
-      onPrimary = "1c1410";
-      primaryContainer = "4a3420";
-      onPrimaryContainer = "ffd9a8";
-
-      secondary = "6a994e";
-      onSecondary = "12190d";
-
-      tertiary = "f4c95d";
-      onTertiary = "241a03";
-
-      error = "d9534f";
-      onError = "2a0a08";
-    };
+    # See lib/palette-m3.nix for the shared M3 palette this reads from
+    # (also used by fuzzel, so the whole desktop stays in sync).
+    palette = import ../../lib/palette-m3.nix;
 
     # Declarative keybind list: single source of truth for both the mango
     # `bind` config and the fuzzel keybindings cheatsheet below.
@@ -985,6 +961,21 @@
         color: @on-surface-variant;
       }
 
+      /* Real, intentional hover feedback - only color/background, never
+       * anything geometric (min-width, padding, margin), since those are
+       * exactly what caused the position-jump bug above. mangobar only
+       * supports ONE hover style per module, not one per state, so this
+       * applies uniformly to every tag regardless of active/occupied/
+       * urgent/empty - @outline sits above all four resting tones
+       * (including "occupied"'s surface-container-high) so it always
+       * reads as "lit up", including on the active tag, without looking
+       * like it lost active status entirely (it's a warm neutral, same
+       * family as primary, not a jarring contrast). */
+      #tags:hover {
+        background-color: @outline;
+        color: @on-surface;
+      }
+
       /* Distinct from the active-tag accent so it doesn't read as "tag 1
        * is active" when overview mode is toggled instead. Same pill shape
        * and tight margin as #tags since it sits directly in that cluster. */
@@ -1220,6 +1211,15 @@
         bordercolor = "${palette.outline}ff";
         focuscolor = "${palette.primary}ff";
         urgentcolor = "${palette.error}ff";
+        # Rest of mango's colorable UI, same tokens: drop/split are the
+        # live preview lines shown while dragging a window (drop target /
+        # tile-split position), scratchpad is a named-scratchpad window's
+        # border, root is the compositor's own background fill (only
+        # visible for a flash before swaybg paints the real wallpaper).
+        dropcolor = "${palette.primary}ff";
+        splitcolor = "${palette.primary}ff";
+        scratchpadcolor = "${palette.tertiary}ff";
+        rootcolor = "${palette.surface}ff";
 
         # Notification/OSD popups (mako) are layer-shell surfaces, so they
         # fade in/out via layer_animations rather than the window animation

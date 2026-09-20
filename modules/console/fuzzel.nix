@@ -1,4 +1,7 @@
 {den, ...}: let
+  # See lib/palette-m3.nix for the shared M3 palette this reads from
+  # (also used by mango/mangobar, so the whole desktop stays in sync).
+  palette = import ../../lib/palette-m3.nix;
   fuzzelHomeManager = {
     programs.fuzzel = {
       enable = true;
@@ -12,16 +15,18 @@
           width = 30;
         };
         colors = {
-          background = "151515ff";
-          text = "e8e8d3ff";
-          match = "fad07aff";
-          selection = "404040ff";
-          selection-text = "e8e8d3ff";
-          selection-match = "fad07aff";
-          border = "8197bfff";
+          background = "${palette.surface}ff";
+          text = "${palette.onSurface}ff";
+          match = "${palette.primary}ff";
+          selection = "${palette.surfaceContainerHigh}ff";
+          selection-text = "${palette.onSurface}ff";
+          selection-match = "${palette.primary}ff";
+          border = "${palette.outline}ff";
         };
         border.width = 1;
-        border.radius = 10;
+        # M3 "corner-medium" (12px), matching mangobar's menu popup - same
+        # shape language for every popup-style surface on the desktop.
+        border.radius = 12;
       };
     };
   };
