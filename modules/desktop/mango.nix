@@ -663,89 +663,131 @@
     };
 
     xdg.configFile."mangobar/style.css".text = ''
+      /* Material 3 tonal roles, mapped onto the existing warm forest
+       * palette instead of swapping in Google's default purple. mangobar
+       * has no box-shadow/elevation, so "elevation" here is faked with a
+       * 3-step surface tonal ladder (surface < surface-container <
+       * surface-container-high), and color is reserved for
+       * state/actionable modules rather than sprinkled everywhere. */
+      @define-color surface #171310;
+      @define-color surface-container #221c16;
+      @define-color surface-container-high #2e261d;
+      @define-color outline #3a2f24;
+      @define-color on-surface #f5e6d3;
+      @define-color on-surface-variant #a8927c;
+
+      @define-color primary #f2994a;
+      @define-color on-primary #1c1410;
+      @define-color primary-container #4a3420;
+      @define-color on-primary-container #ffd9a8;
+
+      @define-color secondary #6a994e;
+      @define-color on-secondary #12190d;
+
+      @define-color tertiary #f4c95d;
+      @define-color on-tertiary #241a03;
+
+      @define-color error #d9534f;
+      @define-color on-error #2a0a08;
+
       * {
         # mangobar's CSS parser keeps only the first font-family value and
         # drops any fallback list, so this must be a font that itself
         # covers every glyph used in this config (Nerd Font icons included).
+        # font-family/size/weight are also global, not per-selector, so
+        # they can only be set once here.
         font-family: "Maple Mono NF";
-        color: #f5e6d3;
-        background-color: #1c1410;
-        padding: 0px 10px;
-        margin: 5px 2px;
-        border-radius: 6px;
+        color: @on-surface;
+        background-color: @surface-container;
+        padding: 0px 12px;
+        margin: 4px 3px;
+        # ~half the ~28px chip height mangobar leaves inside the bar
+        # margins below, for a full Material pill shape.
+        border-radius: 14px;
       }
 
       #bar {
         background: none;
-        margin: 5px 8px;
+        margin: 6px 10px;
       }
 
       #tags {
-        padding: 0px 8px;
+        padding: 0px 10px;
+        min-width: 26px;
       }
 
+      /* Selected tag: filled with primary, the one accent that always
+       * means "current". */
       #tags.active {
-        background-color: #f2994a;
-        color: #1c1410;
+        background-color: @primary;
+        color: @on-primary;
       }
+      /* Has windows: raised a tone above resting surface. */
       #tags.occupied {
-        background-color: #2a201a;
-        color: #f5e6d3;
+        background-color: @surface-container-high;
+        color: @on-surface;
       }
       #tags.urgent {
-        background-color: #d9534f;
-        color: #1c1410;
+        background-color: @error;
+        color: @on-error;
       }
+      /* Empty: sunk a tone below resting surface, muted text. */
       #tags.empty {
-        background-color: #151009;
-        color: #7a6a5a;
+        background-color: @surface;
+        color: @on-surface-variant;
       }
 
+      /* Distinct from the active-tag accent so it doesn't read as "tag 1
+       * is active" when overview mode is toggled instead. */
       #overview {
-        background-color: #f2994a;
-        color: #1c1410;
+        background-color: @tertiary;
+        color: @on-tertiary;
       }
 
       #layout {
-        background-color: #6a994e;
-        color: #151009;
+        background-color: @secondary;
+        color: @on-secondary;
         min-width: 28px;
       }
 
       #title {
-        background-color: #2a201a;
-        color: #f5e6d3;
+        background-color: @surface-container;
+        color: @on-surface-variant;
       }
 
+      /* Interactive (click/scroll to change volume): gets a container
+       * accent instead of a neutral tone. */
       #volume {
-        background-color: #f4c95d;
-        color: #1c1410;
+        background-color: @primary-container;
+        color: @on-primary-container;
       }
 
       #tray {
-        background-color: #2a201a;
+        background-color: @surface-container;
       }
 
+      /* Passive info, not actionable, so neutral tones rather than the
+       * old solid-yellow/green fill. */
       #clock {
-        background-color: #f4c95d;
-        color: #1c1410;
+        background-color: @surface-container-high;
+        color: @on-surface;
       }
       #clock.date {
-        background-color: #6a994e;
-        color: #151009;
+        background-color: @surface-container;
+        color: @on-surface-variant;
       }
 
       menu {
-        background-color: #151009;
-        border-color: #f5e6d3;
-        border-radius: 8px;
+        background-color: @surface-container-high;
+        border-color: @outline;
+        border-radius: 12px;
       }
       menuitem {
-        color: #f5e6d3;
+        color: @on-surface;
       }
       menuitem:hover {
-        background-color: #f2994a;
-        color: #1c1410;
+        background-color: @primary;
+        color: @on-primary;
       }
     '';
 

@@ -1,4 +1,8 @@
-{den, ...}: {
+{
+  den,
+  inputs,
+  ...
+}: {
   den.aspects.matt = {
     # (9)
     includes = [
@@ -31,52 +35,58 @@
       ];
     };
     homeManager = {pkgs, ...}: {
-      home.packages = with pkgs; [
-        alacritty
-        alacritty-theme
-        #bambu-studio
-        brightnessctl
-        btop
-        chafa
-        cmatrix
-        fastfetch
-        feh
-        ffmpeg
-        #freecad
-        gimp
-        giph
-        grc
-        grim
-        haskellPackages.sixel
-        htop
-        inkscape
-        kitty-themes
-        libsixel
-        libvirt
-        lsd
-        lsof
-        neovim
-        nwg-look
-        # obsidian
-        playerctl
-        prismlauncher
-        qalculate-qt
-        qmk
-        ripgrep
-        slurp
-        showmethekey
-        sops
-        # spotify
-        tree
-        # via
-        virt-manager
-        virt-viewer
-        wev
-        wf-recorder
-        wlr-randr
-        yamlfmt
-        yamllint
-      ];
+      home.packages = with pkgs;
+        [
+          alacritty
+          alacritty-theme
+          #bambu-studio
+          brightnessctl
+          btop
+          chafa
+          cmatrix
+          fastfetch
+          feh
+          ffmpeg
+          #freecad
+          gimp
+          giph
+          grc
+          grim
+          haskellPackages.sixel
+          htop
+          inkscape
+          kitty-themes
+          libsixel
+          libvirt
+          lsd
+          lsof
+          neovim
+          nwg-look
+          # obsidian
+          playerctl
+          prismlauncher
+          qalculate-qt
+          qmk
+          ripgrep
+          slurp
+          showmethekey
+          sops
+          # spotify
+          tree
+          # via
+          virt-manager
+          virt-viewer
+          wev
+          wf-recorder
+          wlr-randr
+          yamlfmt
+          yamllint
+        ]
+        # Home configs here are wired in as a NixOS module (den.hosts), so
+        # they apply via `nixos-rebuild switch`, not `home-manager switch`.
+        # Still handy to have the CLI around for `home-manager generations`
+        # / `home-manager expire-generations` on the resulting profiles.
+        ++ [inputs.home-manager.packages.${pkgs.stdenv.hostPlatform.system}.default];
     };
   };
 }
