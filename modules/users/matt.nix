@@ -12,6 +12,7 @@
       den.aspects.fuzzel
       den.aspects.firefox
       den.aspects.librewolf
+      den.aspects.fonts
       den.aspects.kitty
       den.aspects.mango
       den.aspects.gtk

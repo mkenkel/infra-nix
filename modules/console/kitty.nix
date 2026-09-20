@@ -1,11 +1,12 @@
 {den, ...}: let
-  kittyHomeManager = {pkgs, ...}: {
+  kittyHomeManager = {...}: {
     programs.kitty = {
       enable = true;
+      # Package installed by den.aspects.fonts (modules/fonts.nix), shared
+      # with mangobar's CSS font-family.
       font = {
         name = "Maple Mono NF";
         size = 16;
-        package = pkgs."maple-mono".NF;
       };
       themeFile = "Jellybeans";
       settings = {

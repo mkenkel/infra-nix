@@ -28,6 +28,7 @@
         bottles
         cilium-cli
         curl
+        efibootmgr
         envsubst
         fluxcd
         git

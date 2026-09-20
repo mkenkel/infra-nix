@@ -31,9 +31,9 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    refind-theme-regular = {
-      url = "github:bobafetthotmail/refind-theme-regular";
-      flake = false;
+    grub2-themes = {
+      url = "github:vinceliuice/grub2-themes";
+      inputs.nixpkgs.follows = "nixpkgs";
     };
   };
 }

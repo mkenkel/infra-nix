@@ -634,6 +634,9 @@
           overview-label = "OVERVIEW";
           on-click = "activate";
           on-click-right = "toggle";
+          # Indices are 0-based tag bits: 7 = tag 8 (windowrule sends
+          # discord/vesktop there), 8 = tag 9 (spotify), 9 = tag 0/F10.
+          tag-names = ["1" "2" "3" "4" "5" "6" "7" "󰙯" "󰡰" "0"];
         };
 
         layout.format = "{}";
@@ -661,7 +664,7 @@
 
     xdg.configFile."mangobar/style.css".text = ''
       * {
-        font-family: Source Code Pro;
+        font-family: "Maple Mono NF", "Symbols Nerd Font";
         color: #f5e6d3;
         background-color: #1c1410;
         padding: 0px 10px;
@@ -788,7 +791,11 @@
         image = wallpaperPath;
         scaling = "fill";
 
-        effect-blur = "7x5";
+        # Blur is computed synchronously on the full screenshot before the
+        # lock screen appears, so it's CPU-bound at lock time; effect-scale
+        # downsamples first to keep that from stuttering on a 4K screen.
+        effect-scale = 0.5;
+        effect-blur = "5x3";
         effect-vignette = "0.5:0.5";
         fade-in = 0.2;
 
