@@ -69,30 +69,7 @@ mktogo is a MacBook running [nix-darwin](https://github.com/nix-darwin/nix-darwi
 name, den's default `darwin`-class instantiator calls
 `inputs.darwin.lib.darwinSystem`). [nix-homebrew](https://github.com/zhaofengli-wip/nix-homebrew)
 manages Homebrew itself; app casks (`homebrew.casks` in
-`modules/hostnames/mktogo.nix`) cover GUI apps, most notably **Firefox and
-LibreWolf**.
-
-Those two are a deliberate special case, not an oversight: nixpkgs has no
-`aarch64-darwin` binary-cache entry for either, so a normal
-`programs.firefox`/`programs.librewolf` `package` would mean compiling
-Firefox from source (hours, looks like a hang). Instead, on Darwin,
-`modules/applications/{firefox,librewolf}.nix` set `package = null` -
-home-manager only manages the *profile* (search engines, extensions,
-cookie policy) - and the actual app binary comes from the Homebrew cask.
-Both modules' own Darwin `configPath` defaults
-(`Library/Application Support/{Firefox,LibreWolf}`) already match where
-Homebrew installs them, so no override is needed there.
-
-One gotcha that comes with `package = null`: nixpkgs' firefox package is
-normally run through a wrapper that sets `MOZ_LEGACY_PROFILES=1`, which is
-what makes Firefox/LibreWolf trust `profiles.ini`'s `Default=1` profile
-directly. Without that wrapper, the raw Homebrew binary uses Firefox's
-newer per-install profile isolation and mints a *new, empty* profile on
-first launch instead of adopting the home-manager-managed one ("Your
-profile cannot be loaded"). `librewolf.nix` works around this with a
-home-manager `launchd.agents` entry that runs
-`launchctl setenv MOZ_LEGACY_PROFILES 1` at login, for the whole session
-regardless of how the `.app` gets launched.
+`modules/hostnames/mktogo.nix`) cover GUI apps
 
 The Wayland desktop aspects (`mango`, `river`, `fuzzel`, `gtk`, `via`)
 obviously don't apply here. Rather than a separate Darwin-only user
