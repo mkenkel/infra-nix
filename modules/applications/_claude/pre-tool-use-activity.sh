@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # PreToolUse hook — Claude is actively processing; mark session as running.
 # Reads the hook JSON from stdin, extracts session_id, and writes a state file.
 # Also stores the project_dir so the statusline can identify agent team peers.

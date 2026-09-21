@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # Stop hook — Claude finished its turn; mark session as idle with current timestamp.
 # Reads the hook JSON from stdin, extracts session_id, and writes a state file.
 # Also stores the project_dir so the statusline can identify agent team peers.

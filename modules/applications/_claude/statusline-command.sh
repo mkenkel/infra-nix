@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # Line 1: Model | tokens used/total | % used <fullused> | % remain <fullremain> | thinking: on/off | running/idle since HH:MM
 # Line 2: current: <progressbar> % | weekly: <progressbar> % | extra: <progressbar> $used/$limit
 # Line 3: resets <time> | resets <datetime> | resets <date>
