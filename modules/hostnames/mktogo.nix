@@ -6,6 +6,7 @@
   den.aspects.mktogo = {
     includes = [
       den.batteries.hostname
+      den.aspects.nix-settings
     ];
     darwin = {pkgs, ...}: {
       imports = [inputs.nix-homebrew.darwinModules.nix-homebrew];
