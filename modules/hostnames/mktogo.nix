@@ -40,6 +40,7 @@
           "firefox"
           "font-sarasa-nerd"
           "keeper-password-manager"
+          "librewolf"
           "obsidian"
           "visual-studio-code"
           "spotify"

@@ -13,8 +13,8 @@
       den.aspects.tmux
       den.aspects.bat
       den.aspects.claude
-      #den.aspects.firefox
-      #den.aspects.librewolf
+      den.aspects.firefox
+      den.aspects.librewolf
       den.aspects.fonts
       den.aspects.kitty
       den.aspects.git

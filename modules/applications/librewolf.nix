@@ -3,10 +3,20 @@
   inputs,
   ...
 }: let
-  librewolfHomeManager = {pkgs, ...}: {
+  librewolfHomeManager = {
+    pkgs,
+    lib,
+    ...
+  }: {
     imports = [inputs.nur.modules.homeManager.default];
     programs.librewolf = {
       enable = true;
+      # Same reasoning as firefox.nix: no aarch64-darwin binary cache entry,
+      # so let Homebrew's cask (hostnames/mktogo.nix) supply the app and
+      # only manage the profile/policies here. The module's own Darwin
+      # configPath default ("Library/Application Support/LibreWolf")
+      # already matches where that cask lands, so no override needed.
+      package = lib.mkIf pkgs.stdenv.isDarwin null;
       settings = {
         "extensions.activeThemeID" = "firefox-compact-dark@mozilla.org";
         "layout.css.prefers-color-scheme.content-override" = 0;
