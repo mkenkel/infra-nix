@@ -13,6 +13,11 @@
       nixpkgs.hostPlatform = "aarch64-darwin";
       nixpkgs.config.allowUnfree = true;
 
+      # nix-darwin only manages an existing account's shell/home when it's a
+      # known user with a matching uid (see den.batteries.user-shell).
+      users.knownUsers = ["matt"];
+      users.users.matt.uid = 501;
+
       nix.enable = true;
       nix.settings.experimental-features = ["nix-command" "flakes"];
 
