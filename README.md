@@ -1,11 +1,11 @@
 # infra-nix
 
-Matt's NixOS flake config, currently covering one host: **igloo**
-(x86_64-linux), one user: **matt**.
+Matt's Nix flake config, covering two hosts: **igloo** (x86_64-linux,
+NixOS) and **mktogo** (aarch64-darwin, nix-darwin), one user: **matt**.
 
 ## What this is
 
-A single NixOS flake built with [flake-parts](https://flake.parts/) and the
+A single Nix flake built with [flake-parts](https://flake.parts/) and the
 [`den`](https://github.com/denful/den) / [`import-tree`](https://github.com/denful/import-tree)
 "dendritic" pattern: every `.nix` file under `modules/` is auto-discovered
 and merged into one flake-parts module tree - there's no central list of
@@ -24,11 +24,20 @@ den.aspects.igloo.includes = [
 ];
 ```
 
-home-manager is wired in as a NixOS module (`den.hosts.*.users.matt`), not
-run standalone - `sudo nixos-rebuild switch` applies both system and home
-config in one shot. There's no separate `home-manager switch` step,
-although the `home-manager` CLI binary is on `$PATH` (useful for things
-like `home-manager generations`).
+home-manager is wired in as a NixOS/nix-darwin module (`den.hosts.*.users.matt`),
+not run standalone - `sudo nixos-rebuild switch` / `darwin-rebuild switch`
+applies both system and home config in one shot. There's no separate
+`home-manager switch` step, although the `home-manager` CLI binary is on
+`$PATH` (useful for things like `home-manager generations`).
+
+Each host declares its own **host aspect** (`den.aspects.igloo`,
+`den.aspects.mktogo`) with `nixos = {...}`/`darwin = {...}` blocks as
+appropriate - den auto-detects the class from the host's system
+(`aarch64-darwin` → `darwin`, everything else → `nixos`). Aspects shared
+across hosts branch the same way when their content actually differs per
+platform (e.g. `nix-settings.nix` has both a `nixos` and a `darwin` block
+for GC/store-optimise, since nix-darwin's options differ slightly from
+NixOS's).
 
 ### Desktop stack
 
@@ -53,12 +62,54 @@ module, not bare data):
 
 Change either file once and rebuild; everything downstream picks it up.
 
+### macOS (mktogo)
+
+mktogo is a MacBook running [nix-darwin](https://github.com/nix-darwin/nix-darwin)
+(input name must be exactly `darwin` - nix-darwin isn't its own flake input
+name, den's default `darwin`-class instantiator calls
+`inputs.darwin.lib.darwinSystem`). [nix-homebrew](https://github.com/zhaofengli-wip/nix-homebrew)
+manages Homebrew itself; app casks (`homebrew.casks` in
+`modules/hostnames/mktogo.nix`) cover GUI apps, most notably **Firefox and
+LibreWolf**.
+
+Those two are a deliberate special case, not an oversight: nixpkgs has no
+`aarch64-darwin` binary-cache entry for either, so a normal
+`programs.firefox`/`programs.librewolf` `package` would mean compiling
+Firefox from source (hours, looks like a hang). Instead, on Darwin,
+`modules/applications/{firefox,librewolf}.nix` set `package = null` -
+home-manager only manages the *profile* (search engines, extensions,
+cookie policy) - and the actual app binary comes from the Homebrew cask.
+Both modules' own Darwin `configPath` defaults
+(`Library/Application Support/{Firefox,LibreWolf}`) already match where
+Homebrew installs them, so no override is needed there.
+
+One gotcha that comes with `package = null`: nixpkgs' firefox package is
+normally run through a wrapper that sets `MOZ_LEGACY_PROFILES=1`, which is
+what makes Firefox/LibreWolf trust `profiles.ini`'s `Default=1` profile
+directly. Without that wrapper, the raw Homebrew binary uses Firefox's
+newer per-install profile isolation and mints a *new, empty* profile on
+first launch instead of adopting the home-manager-managed one ("Your
+profile cannot be loaded"). `librewolf.nix` works around this with a
+home-manager `launchd.agents` entry that runs
+`launchctl setenv MOZ_LEGACY_PROFILES 1` at login, for the whole session
+regardless of how the `.app` gets launched.
+
+The Wayland desktop aspects (`mango`, `river`, `fuzzel`, `gtk`, `via`)
+obviously don't apply here. Rather than a separate Darwin-only user
+aspect, `modules/users/matt.nix` includes them conditionally, gated on
+`host.class != "darwin"` - so the same `den.aspects.matt` works
+unmodified on both hosts. The cross-platform `home.packages` list is
+filtered through `lib.meta.availableOn pkgs.stdenv.hostPlatform`, so
+Linux/Wayland-only packages (e.g. `libvirt`, `grim`, `wlr-randr`) silently
+drop out on Darwin instead of failing the build.
+
 ## Applying changes (SOPs)
 
 **Normal changes:**
 
 ```sh
-sudo nixos-rebuild switch --flake .#igloo
+sudo nixos-rebuild switch --flake .#igloo     # igloo
+darwin-rebuild switch --flake .#mktogo        # mktogo
 ```
 
 **Check before switching** (evaluates + builds without activating
@@ -73,16 +124,26 @@ or, to just build without a full check:
 
 ```sh
 nixos-rebuild build --flake .#igloo
+darwin-rebuild build --flake .#mktogo
 ```
+
+**New files don't show up until they're `git add`ed.** This flake is a
+local `git+file://` source, and Nix only evaluates files git already knows
+about - a brand-new, untracked `.nix` file under `modules/` is silently
+invisible to `nix eval`/`nix build`/`*-rebuild` (an already-tracked file
+you've only *modified* is fine). If a new host/aspect file doesn't seem to
+apply at all, this is the first thing to check: `git add` it, then
+re-evaluate.
 
 **Rolling back:**
 
 ```sh
-sudo nixos-rebuild switch --rollback
+sudo nixos-rebuild switch --rollback   # igloo
+darwin-rebuild switch --rollback       # mktogo
 ```
 
-or pick an older generation from the GRUB boot menu (grub keeps the last
-10 generations - see `boot.loader.grub.configurationLimit` in
+or, on igloo, pick an older generation from the GRUB boot menu (grub keeps
+the last 10 generations - see `boot.loader.grub.configurationLimit` in
 `modules/system/boot/grub.nix`).
 
 **Don't hand-edit `flake.nix`** - it's generated (see the file's own
