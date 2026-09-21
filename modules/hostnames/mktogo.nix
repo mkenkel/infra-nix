@@ -37,7 +37,6 @@
         enable = true;
         casks = [
           "autodesk-fusion"
-          "firefox"
           "font-sarasa-nerd"
           "keeper-password-manager"
           "librewolf"

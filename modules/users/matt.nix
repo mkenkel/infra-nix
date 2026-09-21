@@ -13,7 +13,6 @@
       den.aspects.tmux
       den.aspects.bat
       den.aspects.claude
-      den.aspects.firefox
       den.aspects.librewolf
       den.aspects.fonts
       den.aspects.kitty
@@ -26,8 +25,9 @@
       den.aspects.programming
       den.aspects.spotify
       den.aspects.obsidian
-      # Wayland/Linux desktop-only aspects — skipped on Darwin hosts, where
-      # these home-manager options don't exist / assert on platform.
+      # Skipped on Darwin hosts: mango/river/fuzzel/gtk/via are Wayland-only
+      # (options don't exist / assert on platform under home-manager);
+      # firefox is just unwanted on mktogo (LibreWolf covers browsing there).
       (
         {host, ...}:
           if host.class == "darwin"
@@ -39,6 +39,7 @@
               den.aspects.fuzzel
               den.aspects.gtk
               den.aspects.via
+              den.aspects.firefox
             ];
           }
       )
