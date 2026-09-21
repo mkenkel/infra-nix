@@ -26,8 +26,7 @@
       den.aspects.spotify
       den.aspects.obsidian
       # Skipped on Darwin hosts: mango/river/fuzzel/gtk/via are Wayland-only
-      # (options don't exist / assert on platform under home-manager);
-      # firefox is just unwanted on mktogo (LibreWolf covers browsing there).
+      # (options don't exist / assert on platform under home-manager).
       (
         {host, ...}:
           if host.class == "darwin"
@@ -39,7 +38,6 @@
               den.aspects.fuzzel
               den.aspects.gtk
               den.aspects.via
-              den.aspects.firefox
             ];
           }
       )

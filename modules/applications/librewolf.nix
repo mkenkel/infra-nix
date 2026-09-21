@@ -11,8 +11,8 @@
     imports = [inputs.nur.modules.homeManager.default];
     programs.librewolf = {
       enable = true;
-      # Same reasoning as firefox.nix: no aarch64-darwin binary cache entry,
-      # so let Homebrew's cask (hostnames/mktogo.nix) supply the app and
+      # No aarch64-darwin binary cache entry for this package, so let
+      # Homebrew's cask (hostnames/mktogo.nix) supply the app and
       # only manage the profile/policies here. The module's own Darwin
       # configPath default ("Library/Application Support/LibreWolf")
       # already matches where that cask lands, so no override needed.
