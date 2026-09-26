@@ -69,8 +69,7 @@ updog sets `wsl.enable = true` on its `den.hosts` entry (`modules/hosts.nix`),
 which makes den's wsl battery import `inputs.nixos-wsl` and has
 `den.batteries.primary-user` set `wsl.defaultUser`. It's headless: the
 desktop aspects and GUI apps/packages in `modules/users/matt.nix` are gated
-off on `host.wsl.enable`, and `modules/console/git.nix` points git's
-credential helper at Git for Windows' credential manager.
+off on `host.wsl.enable`.
 
 ### macOS (mktogo)
 

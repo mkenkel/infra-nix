@@ -15,6 +15,12 @@
       # existing /home/matt stays owned by the right account.
       users.users.matt.uid = 1001;
 
+      # WSL shells aren't logind sessions, so without linger user@1001 is
+      # stopped ~10s after boot's short-lived login session ends - taking
+      # tmux (whose panes run as scopes under it) and the fish-autostarted
+      # terminal down with it on the first launch.
+      users.users.matt.linger = true;
+
       environment.systemPackages = with pkgs; [
         age
         alejandra
