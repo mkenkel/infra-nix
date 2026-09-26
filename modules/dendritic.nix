@@ -48,6 +48,13 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    # den's wsl battery (host.wsl.enable) imports
+    # `inputs.nixos-wsl.nixosModules.default` by default.
+    nixos-wsl = {
+      url = "github:nix-community/NixOS-WSL/main";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     nix-homebrew.url = "github:zhaofengli-wip/nix-homebrew";
 
     homebrew-bundle = {

@@ -10,10 +10,9 @@
   # matt user at mktogo host (MacBook, nix-darwin).
   den.hosts.aarch64-darwin.mktogo.users.matt = {};
 
-  # other hosts can also have user tux.
-  # den.hosts.x86_64-linux.south = {
-  #   wsl = { }; # add nixos-wsl input for this.
-  #   users.tux = { };
-  #   users.orca = { };
-  # };
+  # matt user at updog host (NixOS-WSL on the Windows desktop).
+  den.hosts.x86_64-linux.updog = {
+    wsl.enable = true;
+    users.matt = {};
+  };
 }

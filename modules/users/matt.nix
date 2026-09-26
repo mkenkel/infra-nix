@@ -13,9 +13,6 @@
       den.aspects.tmux
       den.aspects.bat
       den.aspects.claude
-      den.aspects.librewolf
-      den.aspects.fonts
-      den.aspects.kitty
       den.aspects.git
       den.aspects.gpg
       den.aspects.neovim
@@ -23,13 +20,59 @@
       den.aspects.fzf
       den.aspects.gpg-agent
       den.aspects.programming
-      den.aspects.spotify
-      den.aspects.obsidian
-      # Skipped on Darwin hosts: mango/river/fuzzel/gtk/via are Wayland-only
-      # (options don't exist / assert on platform under home-manager).
+      # GUI apps/packages: skipped on WSL hosts, which are used headless
+      # from a Windows-side terminal.
       (
         {host, ...}:
-          if host.class == "darwin"
+          if host.wsl.enable or false
+          then {}
+          else {
+            includes = [
+              den.aspects.librewolf
+              den.aspects.fonts
+              den.aspects.kitty
+              den.aspects.spotify
+              den.aspects.obsidian
+            ];
+            homeManager = {
+              pkgs,
+              lib,
+              ...
+            }: {
+              home.packages = with pkgs;
+                builtins.filter (lib.meta.availableOn pkgs.stdenv.hostPlatform) [
+                  alacritty
+                  alacritty-theme
+                  #bambu-studio
+                  brightnessctl
+                  feh
+                  #freecad
+                  gimp
+                  giph
+                  grim
+                  inkscape
+                  kitty-themes
+                  libvirt
+                  nwg-look
+                  prismlauncher
+                  qalculate-qt
+                  slurp
+                  showmethekey
+                  virt-manager
+                  virt-viewer
+                  wev
+                  wf-recorder
+                  wlr-randr
+                ];
+            };
+          }
+      )
+      # Skipped on Darwin hosts: mango/river/fuzzel/gtk/via are Wayland-only
+      # (options don't exist / assert on platform under home-manager).
+      # Also skipped on WSL, which has no desktop session of its own.
+      (
+        {host, ...}:
+          if host.class == "darwin" || (host.wsl.enable or false)
           then {}
           else {
             includes = [
@@ -55,45 +98,23 @@
       home.packages =
         (with pkgs;
           builtins.filter (lib.meta.availableOn pkgs.stdenv.hostPlatform) [
-            alacritty
-            alacritty-theme
-            #bambu-studio
-            brightnessctl
             btop
             chafa
             cmatrix
             fastfetch
-            feh
             ffmpeg
-            #freecad
-            gimp
-            giph
             grc
-            grim
             haskellPackages.sixel
             htop
-            inkscape
-            kitty-themes
             libsixel
-            libvirt
             lsd
             lsof
             neovim
-            nwg-look
             # playerctl is currently broken in nixpkgs (pkgs.playerctl.meta.broken)
-            prismlauncher
-            qalculate-qt
             qmk
             ripgrep
-            slurp
-            showmethekey
             sops
             tree
-            virt-manager
-            virt-viewer
-            wev
-            wf-recorder
-            wlr-randr
             yamlfmt
             yamllint
           ])

@@ -1,7 +1,8 @@
 # infra-nix
 
-Matt's Nix flake config, covering two hosts: **igloo** (x86_64-linux,
-NixOS) and **mktogo** (aarch64-darwin, nix-darwin), one user: **matt**.
+Matt's Nix flake config, covering three hosts: **igloo** (x86_64-linux,
+NixOS), **updog** (x86_64-linux, NixOS-WSL) and **mktogo** (aarch64-darwin,
+nix-darwin), one user: **matt**.
 
 ## What this is
 
@@ -62,6 +63,15 @@ module, not bare data):
 
 Change either file once and rebuild; everything downstream picks it up.
 
+### WSL (updog)
+
+updog sets `wsl.enable = true` on its `den.hosts` entry (`modules/hosts.nix`),
+which makes den's wsl battery import `inputs.nixos-wsl` and has
+`den.batteries.primary-user` set `wsl.defaultUser`. It's headless: the
+desktop aspects and GUI apps/packages in `modules/users/matt.nix` are gated
+off on `host.wsl.enable`, and `modules/console/git.nix` points git's
+credential helper at Git for Windows' credential manager.
+
 ### macOS (mktogo)
 
 mktogo is a MacBook running [nix-darwin](https://github.com/nix-darwin/nix-darwin)
@@ -86,6 +96,7 @@ drop out on Darwin instead of failing the build.
 
 ```sh
 sudo nixos-rebuild switch --flake .#igloo     # igloo
+sudo nixos-rebuild switch --flake .#updog     # updog (inside WSL)
 darwin-rebuild switch --flake .#mktogo        # mktogo
 ```
 
