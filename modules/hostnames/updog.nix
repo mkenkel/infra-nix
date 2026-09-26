@@ -21,6 +21,11 @@
       # terminal down with it on the first launch.
       users.users.matt.linger = true;
 
+      # Appending the Windows PATH (~40 /mnt/c dirs, served over 9P) makes
+      # every interactive fish start ~2.1s instead of ~80ms, which every new
+      # tmux window/pane pays. Windows tools stay reachable by full path.
+      wsl.interop.includePath = false;
+
       environment.systemPackages = with pkgs; [
         age
         alejandra
