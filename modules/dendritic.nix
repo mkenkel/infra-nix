@@ -9,6 +9,8 @@
     den.url = "github:denful/den";
     flake-file.url = "github:vic/flake-file";
 
+    claude-code-nix.url = "github:sadjow/claude-code-nix";
+
     nixpkgs.url = "github:nixos/nixpkgs/release-26.05";
 
     home-manager = {

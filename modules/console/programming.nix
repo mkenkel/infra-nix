@@ -50,6 +50,7 @@
         ))
         pkgs.pyright
         pkgs.rustup
+        pkgs.tree-sitter
         pkgs.vim
         pkgs.yaml-language-server
         pkgs.zsh-autosuggestions

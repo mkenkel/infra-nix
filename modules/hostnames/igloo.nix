@@ -48,7 +48,6 @@
         lua-language-server
         lua5_1
         luajit
-        luaPackages.tree-sitter-cli
         nfs-utils
         nixfmt
         openssl

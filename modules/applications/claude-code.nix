@@ -1,4 +1,8 @@
-{den, ...}: {
+{
+  den,
+  inputs,
+  ...
+}: {
   den.aspects.claude = {
     includes = [
       (den.batteries.unfree [
@@ -6,11 +10,13 @@
       ])
     ];
     nixos = {pkgs, ...}: {
+      nixpkgs.overlays = [inputs.claude-code-nix.overlays.default];
       environment.systemPackages = with pkgs; [
         claude-code
       ];
     };
     darwin = {pkgs, ...}: {
+      nixpkgs.overlays = [inputs.claude-code-nix.overlays.default];
       environment.systemPackages = with pkgs; [
         claude-code
       ];
