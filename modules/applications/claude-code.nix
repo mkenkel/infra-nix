@@ -54,7 +54,52 @@
             command = "~/.claude/scripts/statusline-command.sh";
             padding = 2;
           };
+          # jq's `*` replaces arrays wholesale, so each event lists every
+          # hook for it: the local activity scripts plus workmux's status
+          # hooks (mirrors workmux's .claude-plugin/plugin.json).
           hooks = {
+            SessionStart = [
+              {
+                matcher = "startup|resume|clear|fork";
+                hooks = [
+                  {
+                    type = "command";
+                    command = "workmux register-agent";
+                  }
+                ];
+              }
+            ];
+            UserPromptSubmit = [
+              {
+                hooks = [
+                  {
+                    type = "command";
+                    command = "workmux set-window-status working";
+                  }
+                ];
+              }
+            ];
+            Notification = [
+              {
+                matcher = "permission_prompt|elicitation_dialog";
+                hooks = [
+                  {
+                    type = "command";
+                    command = "workmux set-window-status waiting";
+                  }
+                ];
+              }
+            ];
+            PostToolUse = [
+              {
+                hooks = [
+                  {
+                    type = "command";
+                    command = "workmux set-window-status working";
+                  }
+                ];
+              }
+            ];
             PreToolUse = [
               {
                 hooks = [
@@ -71,6 +116,10 @@
                   {
                     type = "command";
                     command = "~/.claude/scripts/stop-activity.sh";
+                  }
+                  {
+                    type = "command";
+                    command = "workmux set-window-status done";
                   }
                 ];
               }

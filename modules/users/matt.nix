@@ -11,6 +11,7 @@
       (den.batteries.user-shell "fish")
       den.aspects.fish
       den.aspects.tmux
+      den.aspects.workmux
       den.aspects.bat
       den.aspects.claude
       den.aspects.git
