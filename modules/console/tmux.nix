@@ -65,6 +65,21 @@
         bind h previous-window
         # ---
 
+        # workmux (prefix is C-a). run-shell -c so it acts on the current
+        # pane's repo/worktree rather than the tmux server's cwd.
+        bind g display-popup -E -w 90% -h 90% -d "#{pane_current_path}" "workmux dashboard"
+        bind a command-prompt -p "workmux add:" "run-shell -c '#{pane_current_path}' 'workmux add %%'"
+        bind m confirm-before -p "workmux merge #{window_name}? (y/n)" "run-shell -c '#{pane_current_path}' 'workmux merge'"
+        # Sidebar toggle + agent navigation from any pane (no prefix)
+        bind t run-shell "workmux sidebar"
+        bind -n M-j run-shell "workmux sidebar next"
+        bind -n M-k run-shell "workmux sidebar prev"
+        bind -n M-1 run-shell "workmux sidebar jump 1"
+        bind -n M-2 run-shell "workmux sidebar jump 2"
+        bind -n M-3 run-shell "workmux sidebar jump 3"
+        bind -n M-4 run-shell "workmux sidebar jump 4"
+        # ---
+
         # Reload configuration file
         # unbind r
         # bind r source-file ~/.config/tmux/tmux.conf
