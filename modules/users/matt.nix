@@ -12,6 +12,7 @@
       den.aspects.fish
       den.aspects.tmux
       den.aspects.workmux
+      den.aspects.spec-kit
       den.aspects.bat
       den.aspects.claude
       den.aspects.git
