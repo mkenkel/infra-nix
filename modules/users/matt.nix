@@ -69,6 +69,13 @@
             };
           }
       )
+      # WSL hosts only: configure the Windows-side Windows Terminal.
+      (
+        {host, ...}:
+          if host.wsl.enable or false
+          then {includes = [den.aspects.windows-terminal];}
+          else {}
+      )
       # Skipped on Darwin hosts: mango/river/fuzzel/gtk/via are Wayland-only
       # (options don't exist / assert on platform under home-manager).
       # Also skipped on WSL, which has no desktop session of its own.
