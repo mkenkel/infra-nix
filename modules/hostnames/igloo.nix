@@ -4,7 +4,6 @@
     includes = [
       den.batteries.hostname
       den.aspects.boot-grub
-      den.aspects.virt-docker
       den.aspects.virt-podman
       den.aspects.locale-us-eastern
       den.aspects.network-manager

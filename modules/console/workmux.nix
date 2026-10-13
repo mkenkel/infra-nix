@@ -4,7 +4,7 @@
   ...
 }: let
   workmuxHomeManager = {pkgs, ...}: {
-    home.packages = [inputs.workmux.packages.${pkgs.stdenv.hostPlatform.system}.default];
+    home.packages = [inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.workmux];
 
     # Claude status hooks (working/waiting/done) live in claude-code.nix
     # alongside the other settings.json hooks.
@@ -18,7 +18,7 @@
     '';
   };
 in {
-  flake-file.inputs.workmux.url = "github:raine/workmux";
+  flake-file.inputs.llm-agents.url = "github:numtide/llm-agents.nix";
 
   den.aspects.workmux = {
     includes = [

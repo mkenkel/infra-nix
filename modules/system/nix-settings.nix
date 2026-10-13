@@ -2,6 +2,10 @@
   den.aspects.nix-settings = {
     nixos = {
       nix.settings.experimental-features = ["nix-command" "flakes"];
+      # numtide's cache for llm-agents.nix (workmux, claude-code, etc.) —
+      # avoids compiling those from source on every host.
+      nix.settings.extra-substituters = ["https://cache.numtide.com"];
+      nix.settings.extra-trusted-public-keys = ["niks3.numtide.com-1:DTx8wZduET09hRmMtKdQDxNNthLQETkc/yaX7M4qK0g="];
       nix.gc = {
         automatic = true;
         dates = "weekly";
@@ -24,6 +28,8 @@
         options = "--delete-older-than 30d";
       };
       nix.optimise.automatic = true;
+      nix.settings.extra-substituters = ["https://cache.numtide.com"];
+      nix.settings.extra-trusted-public-keys = ["niks3.numtide.com-1:DTx8wZduET09hRmMtKdQDxNNthLQETkc/yaX7M4qK0g="];
     };
   };
 }
