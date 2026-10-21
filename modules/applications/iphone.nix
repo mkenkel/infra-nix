@@ -40,8 +40,15 @@
     # Runs when an iPhone is plugged in: wait for the Trust prompt to be
     # accepted, mount the camera roll, open it in Thunar, then clean up on
     # unplug. For bulk copying + conversion use `iphone-import` (see fish.nix).
+    #
+    # Sounds: freedesktop sound theme by default. Point these at any file
+    # pw-play can read (wav/ogg/flac/...) to use your own.
+    sounds = "${pkgs.sound-theme-freedesktop}/share/sounds/freedesktop/stereo";
+    connectSound = "${sounds}/device-added.oga";
+    disconnectSound = "${sounds}/device-removed.oga";
+
     iphoneConnect = pkgs.writeShellScript "iphone-connect" ''
-      export PATH=/run/wrappers/bin:${pkgs.lib.makeBinPath [pkgs.coreutils pkgs.gnugrep pkgs.libimobiledevice pkgs.ifuse pkgs.libnotify pkgs.thunar]}:$PATH
+      export PATH=/run/wrappers/bin:${pkgs.lib.makeBinPath [pkgs.coreutils pkgs.gnugrep pkgs.libimobiledevice pkgs.ifuse pkgs.libnotify pkgs.pipewire pkgs.thunar]}:$PATH
       # NixOS gives user services a minimal default PATH (coreutils, findutils,
       # ...), not the login PATH. Thunar and every app it launches (imv, mpv,
       # ...) inherit this, and GIO hides apps whose binary isn't on PATH, so
@@ -68,11 +75,14 @@
         exit 1
       }
       notify-send "iPhone" "Camera roll mounted at ~/iphone"
+      pw-play ${connectSound} >/dev/null 2>&1 &
       thunar "$mnt/DCIM" &
 
       # Stay alive until the phone is unplugged, then unmount.
       while idevice_id -l 2>/dev/null | grep -q .; do sleep 3; done
       fusermount -u -z "$mnt" || true
+      # Foreground on purpose: the service's cgroup is torn down on exit.
+      pw-play ${disconnectSound} >/dev/null 2>&1 || true
     '';
   in {
     # usbmuxd multiplexes the USB connection to iOS devices.
