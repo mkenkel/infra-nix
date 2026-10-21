@@ -7,6 +7,10 @@
         name = "Breeze-Dark";
         package = pkgs.kdePackages.breeze-gtk;
       };
+      iconTheme = {
+        name = "Papirus-Dark";
+        package = pkgs.papirus-icon-theme;
+      };
       cursorTheme = {
         name = "Posy_Cursor_125_175";
         package = pkgs.posy-cursors;

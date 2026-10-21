@@ -1281,12 +1281,26 @@
         windowrule = [
           "isfloating:1,appid:pavucontrol"
           "isfloating:1,appid:qalculate-qt"
+          # width/height < 1 are fractions of the (scaled) screen, so this
+          # stays proportional: ~40% x 50% (~1230x865 logical px on DP-3).
+          "isfloating:1,width:0.4,height:0.5,appid:^[Tt]hunar$"
+          # Viewers float too, so they open above the floating file manager
+          # instead of tiling behind it.
+          "isfloating:1,width:0.55,height:0.6,appid:^mpv$"
+          "isfloating:1,width:0.55,height:0.6,appid:^imv$"
           "tags:8,appid:^(discord|vesktop)$"
           "tags:9,appid:^Spotify$"
         ];
 
         bind = map bindString keybinds;
         axisbind = map bindString scrollBinds;
+
+        # Hyprland-style floating window handling: hold ALT, left-drag to
+        # move, right-drag to resize (tiled windows are unaffected).
+        mousebind = [
+          "ALT,btn_left,moveresize,curmove"
+          "ALT,btn_right,moveresize,curresize"
+        ];
       };
     };
   };

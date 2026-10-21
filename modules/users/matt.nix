@@ -90,6 +90,8 @@
               den.aspects.fuzzel
               den.aspects.gtk
               den.aspects.via
+              den.aspects.iphone
+              den.aspects.media-viewers
             ];
           }
       )
