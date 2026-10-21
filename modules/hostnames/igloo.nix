@@ -17,6 +17,8 @@
       den.aspects.graphics
       den.aspects.steam
       den.aspects.social
+      den.aspects.davinci-resolve
+      den.aspects.iphone
     ]; # (7)
     nixos = {pkgs, ...}: {
       imports = [./_nixos/hardware-configuration.nix];
